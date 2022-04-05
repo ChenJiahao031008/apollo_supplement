@@ -4,6 +4,72 @@
 
 ## 0 文档说明
 
+### 0.1 Apollo 的容器建立、进入和编译
+
+*该部分是使用Apollo docker系统的简单介绍，如果熟悉docker的读者可以直接跳过。*
+
+Apollo docker的使用和建立都相对复杂，但是官方已经为我们生成了便捷的脚本文件，因此这里主要来介绍：如何使用脚本，根据已经下载好的Apollo镜像创建一个新的容器；以及，如何进入容器中，并对Apollo系统进行编译。
+
+#### 0.1.1 使用Apollo镜像建立一个容器
+
++ **Docker 镜像**：Docker 镜像就是一个模板，可以用来创建 Docker 容器。Apollo官方将所有环境和依赖集成到了这个镜像中，使其不必在本地环境中对库做任何形式的修改。
+
++ **Docker 容器**：Docker利用容器来运行应用。容器是从镜像创建的运行实例。它可以被启动、开始、停止、删除。每个容器都是相互隔离的，保证安全的平台。镜像是唯一的，但是容器可以有多个。
+
++ 在apollo目录下，使用下述命令可以建立一个名为`apollo_dev_{用户名}`的容器：
+
+  ```bash
+  bash docker/scripts/dev_start.sh -l
+  ```
+
+  当指令后有`-l`参数时，表示启动本地镜像对容器进行构建；当不带`-l`参数时，系统将对镜像进行更新检查（需要联网），然后创建新的容器。由于后者时间较长，因此一般带参数`-l`。
+
+  新生成的容器一般通过tag进行区分（即容器名：`apollo_dev_{用户名}`），如果新容器与旧容器相同，那么新容器将不带任何警告的对旧容器进行覆盖。
+
+#### 0.1.2 进入容器的两种方法
+
+创建容器后，每次开关机将默认关闭。因此需要首先开启容器。容器开启有两种方式：
+
+1. 直接生成一个纯净的新容器，避免之前的操作对系统进行污染，操作指令为：
+
+   ```bash
+   bash docker/scripts/dev_start.sh -l # 从本地镜像生成一个新的容器对原先容器进行覆盖
+   bash docker/scripts/dev_into.sh # 进入容器
+   ```
+
+2. 继承上次启动的容器：
+
+   ```bash
+   docker start apollo_dev_{用户名} # 继承上次使用的容器
+   bash docker/scripts/dev_into.sh # 进入容器
+   ```
+
+   此外，如果初学者对docker镜像、容器管理并不熟悉，也可以使用对应的docker 管理工具，如`Portainer`进行可视化的查看分析。
+
+#### 0.1.3 编译Apollo系统的几种方式
+
+Apollo系统具有多种编译方式，如下：
+
+```bash
+# apollo docker内部
+bash apollo.sh build
+bash apollo.sh build_cpu
+bash apollo.sh build_opt
+bash apollo.sh build_gpu
+```
+
+考虑到运行效率，将优先推荐使用`build_opt`操作，在部分程序中，优化方式进行编译比非优化方式进行编译运行速度相差十几倍。
+
+此外，如果对单个模块进行修改，不必要对所有代码进行编译，只需要对带个模块进行修改即可，如下：
+
+```bash
+bash apollo.sh build_opt localization
+```
+
+当编译因为某些原因进行重新处理时，可以删除隐藏文件夹`.cache`；如果不想重新下载库文件，则可以只删除`.cache/build`文件夹。
+
+### 0.2 启动顺序
+
 本文档将以record数据包及线下课程实际传感器输出作为测试数据，指导对各个模块的启动。**各个模块的启动存在依赖关系**，启动顺序应当为：
 
 1. **启动各个传感器部件和控制模块**：`Transform`、`lidar`、`camera`、`canbus`、`control`及`GPS`等。**注意，播放cyber包时可以跳过该步骤**。
@@ -12,9 +78,19 @@
 4. **启动Planning、Routing模块**：依赖于定位模块、虚拟车道线或者地图。
 5. **启动预测模块**：依赖与定位模块、感知模块
 
-+ **注意**：部分模块的启动不依靠`Dreamview`的可视化界面，以方便输出各种信息以供调试。如果想不采用launch启动而直接采用按键启动的方式，可在`/apollo/modules/dreamview/conf/hmi_modes/xxxx.pb.txt`中进行修改。其中`xxxx`对应不同的debug模式，在本课程中推荐使用`dev_kit_debug.pb.txt`，`key`对应按键的名称，`dag_files`表示对应的启动文件。该文件修改后需要重启`dreamview`：`bash scripts/bootstrap.sh restart`
+### 0.3 DreamView的快捷启动方式
 
-  <img src="apollo各模块启动指导文档.assets/image-20220326203450548.png" alt="image-20220326203450548" style="zoom: 67%;" />
+由于依靠`Dreamview`的可视化界面上通过点击按钮的方式进行各个传感器启动时，报错和警告信息并不能直观的打印出来，以方便输出调试。因此，下面的各个章节均采用launch或者dag直接启动的方式进行。同时，为了后续调试的方便，下面也将给出如何设置这些按键的提示。
+
+Apollo系统具有如下机制：
+
+1. 每次启动dreamview并选择车型后，系统自动将`calibration/data/<对应车型名称>`中的参数文件覆盖掉模块中的相对应的文件，如：`/home/chen/apollo/modules/calibration/data/dev_kit_pix_hooke/gnss_conf/gnss_conf.pb.txt`会覆盖位于`/home/chen/apollo/modules/drivers/gnss/conf/gnss_conf.pb.txt`的文件。因此，推荐在`calibration/data`进行参数的修改。
+
+2. 每次启动dreamview并选择调试模式后，系统自动将按键与对应的dag相关联，其设置可以在`/apollo/modules/dreamview/conf/hmi_modes/xxxx.pb.txt`中进行修改。其中`xxxx`对应不同的debug模式，在本课程中推荐使用`dev_kit_debug.pb.txt`，`key`对应按键的名称，`dag_files`表示对应的启动文件。
+
+   <img src="apollo各模块启动指导文档.assets/image-20220326203450548.png" alt="image-20220326203450548" style="zoom: 67%;" />
+
+   3. 上述文件被修改后需要重启dreamview：`bash scripts/bootstrap.sh restart`
 
 ## 1 传感器连接与驱动配置
 
