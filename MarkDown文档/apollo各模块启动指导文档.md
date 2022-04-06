@@ -2,7 +2,7 @@
 
 [TOC]
 
-## 0 文档说明
+## 0 Apollo系统的基础介绍
 
 ### 0.1 Apollo 的容器建立、进入和编译
 
@@ -46,6 +46,10 @@ Apollo docker的使用和建立都相对复杂，但是官方已经为我们生�
 
    此外，如果初学者对docker镜像、容器管理并不熟悉，也可以使用对应的docker 管理工具，如`Portainer`进行可视化的查看分析。
 
+下图是进入apollo容器的展示：
+
+![](apollo各模块启动指导文档.assets/image-20220204215625902-16492239119194.png)
+
 #### 0.1.3 编译Apollo系统的几种方式
 
 Apollo系统具有多种编译方式，如下：
@@ -66,31 +70,83 @@ bash apollo.sh build_gpu
 bash apollo.sh build_opt localization
 ```
 
+下图为编译成功的情况展示：
+
+<img src="apollo各模块启动指导文档.assets/image-20220204215512143.png" alt="image-20220204215512143" style="zoom: 80%;" />
+
 当编译因为某些原因进行重新处理时，可以删除隐藏文件夹`.cache`；如果不想重新下载库文件，则可以只删除`.cache/build`文件夹。
 
-### 0.2 启动顺序
+### 0.2 各个模块的启动顺序
 
 本文档将以record数据包及线下课程实际传感器输出作为测试数据，指导对各个模块的启动。**各个模块的启动存在依赖关系**，启动顺序应当为：
 
-1. **启动各个传感器部件和控制模块**：`Transform`、`lidar`、`camera`、`canbus`、`control`及`GPS`等。**注意，播放cyber包时可以跳过该步骤**。
-2. **启动定位模块**：包括三种算法（基于RTK的定位，基于NDT的定位，基于MSF的定位），启动后两种需要额外制作地图。
-3. **启动感知模块**：分为给予视觉感知、激光感知、雷达感知和融合感知多个部分，取决于传感器输入。
-4. **启动Planning、Routing模块**：依赖于定位模块、虚拟车道线或者地图。
-5. **启动预测模块**：依赖与定位模块、感知模块
+1. **启动各个传感器部件和控制模块**：包括`Transform`、`lidar`、`GPS`、`camera`、`canbus`等。**注意，播放cyber包时可以跳过该步骤**。
+2. **启动定位模块**：包括三种算法（基于RTK的定位，基于NDT的定位，基于MSF的定位），启动后两种需要额外制作地图。，主要功能是实现车辆在地图中的定位。
+3. **启动感知模块**：分为给予视觉感知、激光感知、雷达感知和融合感知多个部分，取决于传感器输入。主要功能是获得视野范围内目标物的各种运动和属性信息。
+4. **启动预测模块**：依赖与定位模块、感知模块，主要功能是对行人、车辆的运动轨迹进行预测。
+5. **启动Routing、Planning模块**：依赖于定位、感知和预测模块、虚拟车道线或者地图。主要功能是设置一个目标点，并规划一条到达目标点和合适路径。
+6. **启动Control模块**：和底盘进行通讯，并控制车辆运动。执行该模块需要对车辆进行放权（进入自动驾驶模式）。
 
 ### 0.3 DreamView的快捷启动方式
 
-由于依靠`Dreamview`的可视化界面上通过点击按钮的方式进行各个传感器启动时，报错和警告信息并不能直观的打印出来，以方便输出调试。因此，下面的各个章节均采用launch或者dag直接启动的方式进行。同时，为了后续调试的方便，下面也将给出如何设置这些按键的提示。
+DreamView是Apollo系统中用于可视化和交互界面模块。
+
+<img src="apollo各模块启动指导文档.assets/image-20220204215917670.png" alt="image-20220204215917670" style="zoom: 33%;" />
+
+由于依靠`Dreamview`的可视化界面上通过点击按钮的方式进行各个传感器启动时，报错和警告信息并不能直观的打印出来，以方便输出调试。因此，下面的各个章节均采用launch或者dag直接启动的方式进行。
+
+<img src="apollo各模块启动指导文档.assets/image-20220204220254872.png" alt="image-20220204220254872" style="zoom: 50%;" />
+
+同时，为了后续调试的方便，下面也将给出如何设置这些按键的提示。
 
 Apollo系统具有如下机制：
 
-1. 每次启动dreamview并选择车型后，系统自动将`calibration/data/<对应车型名称>`中的参数文件覆盖掉模块中的相对应的文件，如：`/home/chen/apollo/modules/calibration/data/dev_kit_pix_hooke/gnss_conf/gnss_conf.pb.txt`会覆盖位于`/home/chen/apollo/modules/drivers/gnss/conf/gnss_conf.pb.txt`的文件。因此，推荐在`calibration/data`进行参数的修改。
+1. 每次启动dreamview并选择车型后，系统自动将`calibration/data/<对应车型名称>`中的参数文件覆盖掉模块中的相对应的文件，如：`/home/chen/apollo/modules/calibration/data/dev_kit_pix_hooke/gnss_conf/gnss_conf.pb.txt`会覆盖位于`/home/chen/apollo/modules/drivers/gnss/conf/gnss_conf.pb.txt`的文件。因此，推荐在`calibration/data`进行参数的修改。**课程中将会提供对应车辆底盘的相关数据**。
 
 2. 每次启动dreamview并选择调试模式后，系统自动将按键与对应的dag相关联，其设置可以在`/apollo/modules/dreamview/conf/hmi_modes/xxxx.pb.txt`中进行修改。其中`xxxx`对应不同的debug模式，在本课程中推荐使用`dev_kit_debug.pb.txt`，`key`对应按键的名称，`dag_files`表示对应的启动文件。
 
    <img src="apollo各模块启动指导文档.assets/image-20220326203450548.png" alt="image-20220326203450548" style="zoom: 67%;" />
 
    3. 上述文件被修改后需要重启dreamview：`bash scripts/bootstrap.sh restart`
+
+### 0.4 Apollo的调试与Python脚本
+
+#### 0.4.1 日志系统
+
+Apollo的日志系统基于glog进行二次封装，封装目录位于`apollo/cyber/common/log.h`中，包含INFO、WARN、ERROR和FATAL四个等级。程序中通过如下的形式进行输出：
+
+```c++
+AINFO << "INFO!";
+AWARN << "WARN!";
+AERROR << "ERROR!";
+AFATAL << "FATAL!";
+```
+
+当设置输出时，Log会记录所处的模块名称，所在文件的行数，输出内容等，以供测试者进行调试。
+
+Log输出的目录位于`apollo\data\log`，命名为`<模块名称>.log.INFO.<日期-时间>`，为了便于寻找，最近一次目录将会以`<模块名称>.INFO`为名称形成链接，可以快速查询。
+
+更多使用技巧和方式和glog相差不大，因此可以直接参考glog使用：[Github-glog](https://github.com/google/glog)
+
+#### 0.4.2 参数配置系统
+
+Apollo参数系统基于`gflags`和`yaml-cpp`两种依赖库进行设置，其中，gflags配置大多数参数，而yaml仅仅在内外参数等少数领域被使用。大部分参数可以通过访问对应模块的`xxx.pt.txt`文件或者`.conf`文件进行修改，并且修改过后无需再次编译。
+
++ gflags使用指导：[gflags官方指南](https://gflags.github.io/gflags/#intro)
+
++ yaml-cpp使用指导：[Github-yaml](https://github.com/jbeder/yaml-cpp)
+
+#### 0.4.3 Python脚本的使用
+
+为了保持风格统一，在高版本的apollo系统中，Python脚本也被bazel进行统一管理。因此，仅仅使用`python <文件名>`的简单操作无法使用python脚本。我们将一个例子演示在apollo高版本中如何使用python脚本：
+
+Example：执行`modules/tools/vehicle_calibration/data_collector.py`
+
+```bash
+./bazel-bin/modules/tools/vehicle_calibration/data_collector
+```
+
+此时，修改python文件不需要进行额外的编译操作。
 
 ## 1 传感器连接与驱动配置
 
@@ -100,9 +156,9 @@ Apollo系统具有如下机制：
 
 #### 1.1.1 驱动配置
 
-1. *组合并连线*。电气接口详见`supplement/instruction`中材料`速腾16线.pdf`
+1. *组合并连线*。
 
-   + **注意**：其中 GPS-激光授时部分详见`1.4 启动华测组合导航CGI-410`部分。
+   电气接口详见材料: [速腾16线说明书](../传感器说明书/手册_速腾16线.pdf)。**注意**：其中 GPS-激光授时部分详见`1.4 启动华测组合导航CGI-410`部分。
 
    <img src="apollo各模块启动指导文档.assets/image-20220126101503541.png" alt="image-20220126101503541" style="zoom: 33%;" />
 
@@ -116,9 +172,11 @@ Apollo系统具有如下机制：
 
    <img src="apollo各模块启动指导文档.assets/image-20220326204734755.png" alt="image-20220326204734755" style="zoom:50%;" />
 
-3. 【可选】*RS-LiDAR-ROS-Package安装测试*
+3. 【可选】*RS-LiDAR-ROS-Package安装与固态刷新*
 
-   详见官方中文指导说明：[README_CN.md](https://github.com/RoboSense-LiDAR/rslidar_sdk/blob/release/README_CN.md)
+   安装部分：详见官方中文指导说明：[README_CN.md](https://github.com/RoboSense-LiDAR/rslidar_sdk/blob/release/README_CN.md)
+
+   为了和组合惯导进行时间同步，需要对雷达固件进行一定的调整，这部分详见：`同步线制作.pdf`
 
 #### 1.1.2 Apollo驱动启动
 
@@ -148,8 +206,9 @@ Apollo系统具有如下机制：
 2. *启动雷达驱动命令*
 
    ```bash
-   # 实际上启动的是 lidar.dag
    cyber_launch start modules/drivers/lidar/launch/driver.launch
+   # 实际上启动的是 lidar.dag，因此也可以写成：
+   mainboard -d modules/drivers/lidar/dag/lidar.dag
    ```
 
    + 注意：雷达选型不同导致最终的dag文件有一定差异，这里给出`lidar.dag`的全部内容以供参考
@@ -189,8 +248,16 @@ Apollo系统具有如下机制：
      /apollo/sensor/lidar16/compensator/PointCloud2          10.00 
      ```
 
-   + 终端输入：`cyber_visualizer`，订阅`/apollo/sensor/lidar16/compensator/PointCloud2`话题，点击`Play`按钮后窗口出现点云成像。
+     各通道的含义如下：
 
+     + `Scan`：对应ROS中的`sensor_msgs/LaserScan`类型，表示扫描点到雷达中心的距离，Apollo系统中不使用该通道。
+     + `PointCloud2`：对应ROS中的`std_msgs/PointCloud2`类型，表示采集后未经过任何处理的点云信息，一般也不会被直接当做系统输入。
+     + `compensator/PointCloud2`：原始数据经过**运动去畸变**后矫正的点云数据，一般Apollo使用该通道作为输入。关于补偿点云的原理讲解可以参考：[知乎补充讲解](https://zhuanlan.zhihu.com/p/109379384?from_voters_page=true)。
+   
+     其中，第三个通道为补偿点云，但是该点云的发布**依赖gnss或者定位的tf树信息**（提供运动信息），因此如果仅启动雷达时该通道没有输出属于正常现象。
+   
+   + 终端输入：`cyber_visualizer`，订阅`/apollo/sensor/lidar16/compensator/PointCloud2`话题，点击`Play`按钮后窗口出现点云成像。
+   
      <img src="apollo各模块启动指导文档.assets/image-20220302181943665.png" alt="image-20220302181943665" style="zoom:50%;" />
 
 ### 1.2 启动工业相机`LI-USB3.0-AR023ZWDR CS-6mm`
@@ -274,51 +341,77 @@ Apollo系统具有如下机制：
 
 ### 1.3 启动华测组合导航CGI-410 
 
-#### 1.3.1 驱动配置
+#### 1.3.1 组合导航系统的组成
 
-1. *拼装组合并连线*。详见指导手册：[Apollo适配CGI-410](./instruction/手册_Localization-Apollo适配CGI-410.pdf)
+由于篇幅限制，这里仅仅介绍关键组件，更多详细部分参考华测组合导航CGI-410[说明书](../传感器说明书/手册_CGI-410 用户手册(网口版).pdf)。
 
-   + **连接组合导航系统**。
+1. **蘑菇头天线及天线转接线**：分为主天线（又称为**定位天线**，由`GNSS1`接出）、第二天线（又称**定向天线**，由`GNSS2`接出）。定位天线一般位于车辆后方，定向天线位于车辆的前方。
+2. **4G信号天线**：用于接受、发布4G信号；
+3. **组合惯导处理主机**：接收RTK或者GNSS信号，并与IMU数据进行融合与矫正。
+4. **19Pin航空接插线**：包括网口线x1（与上位机进行通讯的），2A电源线x1，RS232串口线x3（时间同步、轮速计输入、串口调试使用）， PPS授时线（时间同步）等。
 
-     + 连线时必要连接为：电源线（12 V，2 A，与车载相连接）、网口线（与工控机相连接）和授时线（可选，与激光相连接）；其余相关线为串口调试使用，可以不连接。
+#### 1.3.2 驱动配置
 
-     + 连接时注意两个天线位置：主天线（又称为**定位天线**，由`GNSS1`接出）位于车辆后方；次天线（又称**定向天线**，由`GNSS2`接出）位于车辆的前方。天线进行布置和固定时要求记录杆臂值（主天线到IMU中心的距离），存放在矫正车辆的`gnss_params/ant_imu_leverarm.yaml`中。
+1. *拼装组合并连线*。
 
-       <img src="apollo各模块启动指导文档.assets/image-20220302202957327.png" alt="image-20220302202957327" style="zoom: 50%;" />
+   航空接插线中（与COM口相连）连线时必要连接为：**电源线**【12V，2A，与车载相连接】、网口线【与工控机相连接】和**授时线**【可选，与激光相连接】；其余相关线为串口调试使用，可以不连接。
 
-   + **配置`CGI-410`及相关输出**：
+   <img src="apollo各模块启动指导文档.assets/image-20220405171919373.png" alt="image-20220405171919373" style="zoom:50%;" />
 
-     + **插入SIM卡**，打开电脑 WiFi， 搜索名为 `GNSS-XXXXXXX`的无线网络（其中 XXXXXXX 代表你的接收器的 SN 号），然后建立连接，密码是`12345678`； 打开浏览器，在地址栏输入 `192.168.200.1`， 弹出登陆界面， 账号： `admin`， 密码：` password`；
+2. *配置组合导航系统相关参数*
 
-     + 开启移动网络【可选】：点击`WIFI 设置`， 可以开启Internet， 连接接收机 WiFi 的载体就可以使用接收机的网络进行上网， 可以关闭 Internet 以免流量用超；
+   1. 修改本地静态 IP 为`192.168.1.103`，**修改完毕后开关网络使其生效**，具体细节详见激光雷达驱动启动章节。
 
-     + 设置输出IP：在CGI-410的`网络设置`-`有线网络`中把组合导航 IP 地址静态更改为 `192.168.1.110`
+   2. 打开电脑 WiFi， 搜索名为 `GNSS-XXXXXXX`的无线网络【其中 XXXXXXX 代表你的接收器的 SN 号，**在多辆车同时存在的情况下一定要多加核查**】，建立连接，密码是`12345678`； 打开浏览器，在地址栏输入 `192.168.200.1`， 弹出登陆界面， 账号： `admin`， 密码：` password`；
 
-     + 配置IO输出：在`TCP Serve/NTRIP Caster4`配置输出 Novatel 协议数据， 端口`9904`；具体细节详见下图
+   3. **配置IO输出**：IO设置决定着组合惯导对外输出的信息、格式及通讯协议。
 
-       <img src="apollo各模块启动指导文档.assets/image-20220302201624969.png" alt="image-20220302201624969" style="zoom:50%;" />
+      + 组合惯导信息：在`TCP Serve/NTRIP Caster4`配置输出 Novatel 协议数据， 端口`9904`；具体细节详见下图：
 
-     + 配置IO输出【可选】：在`串口A`配置中设置波特率为9600 bps，输出协议为GPRMC，输出频率为1 Hz；本课程阶段内暂时不开通RTK账户，不影响正常使用，如果使用，则在第一行进行配置。
+      <img src="apollo各模块启动指导文档.assets/image-20220302201624969.png" alt="image-20220302201624969" style="zoom:50%;" />
 
-       ==// TODO：加上串口和RTK登录界面的截图==
+      + RTK信息：RTK登录部分会在课程中给出账户和密码供大家测试使用
+      + 时间同步信息：在`串口A`配置中设置波特率为9600 bps，输出协议为GPRMC，输出频率为1 Hz。这是为了后续便于时间同步所使用的。
 
-     + 融合数据设置：输出参考点位修正为` IMU`，使用双天线，低速车辆；使用直尺测量**定位天线（后天线）到惯导中心的杆臂**并填入。注意，该值测量以惯导中心为原点，和惯导保持同一坐标系。
+   4. **设置输出IP**：由于我们计划把本地对应的IP字段修改为了`192.168.1.103`，因此，为了保证数据收发位于同一频段内，需要调整组合惯导所在的IP。在CGI-410的`网络设置`-`有线网络`中把组合导航 IP 地址静态更改为 `192.168.1.110`。
 
-       ==// TODO：加上惯导配置界面的截图==
+      <img src="apollo各模块启动指导文档.assets/修改有线网连接.png" style="zoom: 50%;" />
 
-   + **参数设置完成，设备必须进行跑车标定**。
+   5. **开启移动网络【可选】**：点击`模块设置 -> WIFI 设置`， 可以开启Internet， 连接接收机 WiFi 的载体就可以使用接收机的网络进行上网， 可以关闭 Internet 以免流量用超；
 
-     标定只需要一次（**重启后依然有效**），大约 5 到 10 分钟。之后每次设备启动初始化时间为 1 分钟左右，以网页里面 INS 状态为准。INS模式“初始化”代表正在初始化中，“组合模式”代表初始化完成。
+      <img src="apollo各模块启动指导文档.assets/image-20220405173619637.png" alt="image-20220405173619637" style="zoom:80%;" />
 
-     ==// TODO：加上截图，表示初始化完成==
+   6. **修改组合输出中心**：在`惯导 -> 惯导配置 -> 融合数据设置`中，将输出参考点位从下图中的*天线相位中心*调整为*IMU中心*。这里表示以IMU本身的位置作为惯导数据输出的参考点。
 
-   + **本地端口修改**。在指导手册中建议修改静态IP为`192.168.1.102`，但是**该IP与激光雷达端口冲突**，可以修改为`192.168.1.103`。
+      <img src="apollo各模块启动指导文档.assets/image-20220405173719398.png" alt="image-20220405173719398" style="zoom: 80%;" />
 
-2. *【可选】激光授时线连接*
+   7. **设置杆臂值**：杆臂值表示定位天线到IMU的距离。以惯导主机为坐标系原点（右前上），使用直尺测量定位天线与惯导主机的距离$[x,y,z]$并填入`惯导到GNSS定位天线的杆臂`这一项。修改为`使用天线数`为双天线，`差分`为RTK，`工作模式`为低速车辆。点击保存对修改进行记录。
 
-   + 详见补充文件：**`Apollo补充说明`中第一章节：`时序闭环`**
+      <img src="apollo各模块启动指导文档.assets/修改杆臂值.png" style="zoom:50%;" />
 
-#### 1.3.2 Apollo驱动启动
+   8. **重启接收机**：上述操作步骤后，需要重启接受机。在`接收机配置-重启接收机`中确定
+
+      <img src="apollo各模块启动指导文档.assets/重启接收机.png" style="zoom:33%;" />
+
+3. *组合惯导的初始化*
+
+   进行参数配置之后，需要进行初始化操作。首先需要检查`惯导-惯导状态`中的数据状态：可能出现如下情况，此时组合信息和INS中没有出现IMU系统，GNSS中也没有出现定位、定向信息。
+
+   ![](apollo各模块启动指导文档.assets/卫导无IMU不定位定向.png)
+
+   启动车辆，控制其绕8字运动，并加入加速、减速进行激励。观察此时IMU被激励成功，进入初始化模式：
+
+   ![](apollo各模块启动指导文档.assets/基于RTK进行初始化中.png)
+
+   再控制小车绕圈5-10分钟左右，初始化完毕，INS模式调整为组合导航，此时初始化完毕。
+
+   ![](apollo各模块启动指导文档.assets/初始化完成.png)
+
+4. *【可选】激光授时线连接*
+
+   详见补充文件：**`Apollo补充说明`中第一章节：`时序同步`**
+
+#### 1.3.3 Apollo驱动启动
 
 1. *修改gnss配置*
 
@@ -357,12 +450,20 @@ data {
 
    + 检查如下`channel`：
 
-     ```
-     /apollo/sensor/gnss/corrected_imu    100.00
-     /apollo/sensor/gnss/odometry         100.00
+     ```c++
+     // 原始IMU，IMU直接输出
+     /apollo/sensor/gnss/raw_imu    100.00
+     // gnss的纯卫导信息
      /apollo/sensor/gnss/best_pose         10.00
+     // 矫正IMU，组合惯导输出，是IMU去除重力因素和bias后的值
+     /apollo/sensor/gnss/corrected_imu    100.00 
+     // gnss里程计，组合惯导输出，表示东北天坐标系下IMU坐标系（右前上）的位姿和速度
+     /apollo/sensor/gnss/odometry         100.00
+     // 组合惯导状态
+     /apollo/sensor/gnss/ins_status        10.00
+     /apollo/sensor/gnss/ins_stat          10.00
      ```
-
+   
    ![image-20220206091729767](apollo各模块启动指导文档.assets/image-20220206091729767.png)
    
 3. *验证gnss质量*：
@@ -371,7 +472,7 @@ data {
    + `/apollo/sensor/gnss/ins_status`中 `type: GOOD`，表示组合导航结果
    + `/apollo/sensor/gnss/best_pose`中`sol_type: NARROW_INT`，表示GPS定位结果
 
-#### 1.3.3 GNSS系统时间说明
+#### 1.3.4 GNSS系统时间说明
 
 1. 关于`header.timestamp`与`measurement_time`：
 
@@ -381,7 +482,7 @@ data {
 
 2. 关于`/apollo/sensor/gnss/odometry`的时间戳：
 
-   尽管该通道下的`header.timestamp`也是`16xxxxx`开头，但是该时间戳实际上是由gps测量时间转换到北京当地`UTC`时间后得到的，因此每次运行时需要检查该时间是否与系统时间相差过大。
+   尽管该通道下的`header.timestamp`也是`16xxxxx`开头，但是该时间戳实际上是由gps测量时间转换到北京当地`UTC`时间后得到的，因此每次运行时需要检查该时间是否与系统时间存在差异。当存在差异时，则可能是系统时间没有矫正，或者gnss未完成同步。
 
 ### 1.4 启动 canbus
 
@@ -459,6 +560,10 @@ data {
 
 该部分详见`Apollo补充说明`中的第三章节：`Apollo中的各种地图`
 
+创建后的地图目录组织如下：
+
+
+
 #### 2.1.3 Lidar2IMU 外参标定
 
 ==// TODO: 如题==
@@ -518,7 +623,7 @@ data {
    std::list<TimeStampPose,Eigen::aligned_allocator<TimeStampPose>> odometry_buffer_;
    ```
 
-2. 重新编译文件：
+   并重新编译文件：
 
    ```bash
    bash apollo.sh build_opt localization # bash apollo.sh build localization
