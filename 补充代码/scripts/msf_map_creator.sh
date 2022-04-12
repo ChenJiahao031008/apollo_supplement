@@ -29,7 +29,6 @@ LIDAR_TYPE=${5:-lidar16}
 
 PARSED_DATA_FOLDER="$OUT_MAP_FOLDER/parsed_data"
 CLOUD_TOPIC="/apollo/sensor/$LIDAR_TYPE/compensator/PointCloud2"
-# CLOUD_TOPIC="/apollo/sensor/$LIDAR_TYPE/PointCloud2"
 
 function data_exporter() {
   local BAG_FILE=$1
@@ -73,8 +72,8 @@ function create_lossy_map() {
     --srcdir $OUT_MAP_FOLDER/lossless_map \
     --dstdir $OUT_MAP_FOLDER
 
-  #rm -fr $OUT_MAP_FOLDER/lossless_map
-  #rm -fr $OUT_MAP_FOLDER/parsed_data
+  # rm -fr $OUT_MAP_FOLDER/lossless_map
+  # rm -fr $OUT_MAP_FOLDER/parsed_data
   mv $OUT_MAP_FOLDER/lossy_map $OUT_MAP_FOLDER/local_map
 }
 
