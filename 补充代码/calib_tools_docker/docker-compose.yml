@@ -1,0 +1,21 @@
+version: '3.4'
+services:
+  calib-tools:
+    build:
+      context: docker
+      dockerfile: cpu.Dockerfile
+      network: host
+    image: calib-tools:v0
+    container_name: calib-tools
+    environment:
+      - DISPLAY=unix$DISPLAY
+      - GDK_SCALE
+      - GDK_DPI_SCALE
+      - TERM=xterm-color
+    privileged: true
+    volumes:
+      - $PWD/workspace:/workspace
+      - /etc/localtime:/etc/localtime:ro
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    # ports:
+    #   - 8088:8088
