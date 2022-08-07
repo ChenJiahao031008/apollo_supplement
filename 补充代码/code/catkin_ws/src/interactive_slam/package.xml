@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>interactive_slam</name>
+  <version>1.0.0</version>
+  <description>The interactive_slam package</description>
+
+  <maintainer email="k.koide@aist.go.jp">koide</maintainer>
+
+  <license>GPLv3</license>
+
+  <url type="website">https://github.com/koide3/interactive_slam</url>
+
+  <build_depend>roscpp</build_depend>
+  <build_depend>ndt_omp</build_depend>
+  <build_depend>hdl_graph_slam</build_depend>
+  <build_depend>roslib</build_depend>
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <export>
+  </export>
+</package>

@@ -1,0 +1,320 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "liblidar_camera_calib.so"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"include_directories",
+			"include",
+			"find_external_library",
+			"find_package",
+			"add_definitions",
+			"find_qhull",
+			"set_property"
+		],
+		"files" : 
+		[
+			"CMakeLists.txt",
+			"/usr/lib/cmake/vtk-6.2/UseVTK.cmake",
+			"/usr/local/share/pcl-1.9/PCLConfig.cmake",
+			"/usr/local/share/pcl-1.9/Modules/FindQhull.cmake"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 34,
+				"parent" : 0
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 20,
+				"parent" : 0
+			},
+			{
+				"file" : 2,
+				"parent" : 2
+			},
+			{
+				"command" : 3,
+				"file" : 2,
+				"line" : 530,
+				"parent" : 3
+			},
+			{
+				"command" : 2,
+				"file" : 2,
+				"line" : 340,
+				"parent" : 4
+			},
+			{
+				"file" : 1,
+				"parent" : 5
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 26,
+				"parent" : 6
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 25,
+				"parent" : 0
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 21,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 2,
+				"line" : 530,
+				"parent" : 3
+			},
+			{
+				"command" : 6,
+				"file" : 2,
+				"line" : 311,
+				"parent" : 10
+			},
+			{
+				"command" : 4,
+				"file" : 2,
+				"line" : 166,
+				"parent" : 11
+			},
+			{
+				"file" : 3,
+				"parent" : 12
+			},
+			{
+				"command" : 5,
+				"file" : 3,
+				"line" : 88,
+				"parent" : 13
+			},
+			{
+				"command" : 7,
+				"file" : 1,
+				"line" : 23,
+				"parent" : 6
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "  -O3 -DNDEBUG -fPIC   -std=c++14"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 9,
+					"define" : "DISABLE_LIBUSB_1_0"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "DISABLE_PCAP"
+				},
+				{
+					"backtrace" : 9,
+					"define" : "DISABLE_PNG"
+				},
+				{
+					"define" : "lidar_camera_calib_EXPORTS"
+				},
+				{
+					"backtrace" : 14,
+					"define" : "qh_QHpointer"
+				},
+				{
+					"backtrace" : 15,
+					"define" : "vtkFiltersFlowPaths_AUTOINIT=1(vtkFiltersParallelFlowPaths)"
+				},
+				{
+					"backtrace" : 15,
+					"define" : "vtkIOExodus_AUTOINIT=1(vtkIOParallelExodus)"
+				},
+				{
+					"backtrace" : 15,
+					"define" : "vtkIOGeometry_AUTOINIT=1(vtkIOMPIParallel)"
+				},
+				{
+					"backtrace" : 15,
+					"define" : "vtkIOImage_AUTOINIT=1(vtkIOMPIImage)"
+				},
+				{
+					"backtrace" : 15,
+					"define" : "vtkIOSQL_AUTOINIT=2(vtkIOMySQL,vtkIOPostgreSQL)"
+				},
+				{
+					"backtrace" : 15,
+					"define" : "vtkRenderingContext2D_AUTOINIT=1(vtkRenderingContextOpenGL)"
+				},
+				{
+					"backtrace" : 15,
+					"define" : "vtkRenderingCore_AUTOINIT=4(vtkInteractionStyle,vtkRenderingFreeType,vtkRenderingFreeTypeOpenGL,vtkRenderingOpenGL)"
+				},
+				{
+					"backtrace" : 15,
+					"define" : "vtkRenderingFreeType_AUTOINIT=2(vtkRenderingFreeTypeFontConfig,vtkRenderingMatplotlib)"
+				},
+				{
+					"backtrace" : 15,
+					"define" : "vtkRenderingLIC_AUTOINIT=1(vtkRenderingParallelLIC)"
+				},
+				{
+					"backtrace" : 15,
+					"define" : "vtkRenderingVolume_AUTOINIT=1(vtkRenderingVolumeOpenGL)"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 7,
+					"path" : "/usr/include/vtk-6.2"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/usr/include/freetype2"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/usr/include/x86_64-linux-gnu/freetype2"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/usr/include/jsoncpp"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/usr/lib/openmpi/include/openmpi/opal/mca/event/libevent2021/libevent"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/usr/lib/openmpi/include/openmpi/opal/mca/event/libevent2021/libevent/include"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/usr/lib/openmpi/include"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/usr/lib/openmpi/include/openmpi"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/usr/include/python2.7"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/usr/include/hdf5/serial"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/usr/include/libxml2"
+				},
+				{
+					"backtrace" : 7,
+					"path" : "/usr/include/tcl"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/home/chen/apollo_supplement/补充代码/code/lidar_camera_calib"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/usr/local/include/eigen3"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/usr/local/include/pcl-1.9"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/usr/include/eigen3"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/usr/include/ni"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/usr/include/openni2"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/opt/ros/kinetic/include/opencv-3.3.1-dev"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/opt/ros/kinetic/include/opencv-3.3.1-dev/opencv"
+				}
+			],
+			"language" : "CXX",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		}
+	],
+	"id" : "lidar_camera_calib::@6890427a1f51a3e7e1df",
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "-L/usr/local/lib",
+				"role" : "libraryPath"
+			}
+		],
+		"language" : "CXX"
+	},
+	"name" : "lidar_camera_calib",
+	"nameOnDisk" : "liblidar_camera_calib.so",
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "lidar_camera_calib.cc",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "SHARED_LIBRARY"
+}
