@@ -42,7 +42,7 @@ bash $TOP_DIR/supplement/msf_map_creator.sh \
 
 bash $TOP_DIR/supplement/ndt_map_creator.sh \
     $1 \
-    $TOP_DIR/modules/calibration/data/dev_kit_pix_compitiion/lidar_params/lidar16_novatel_extrinsics.yaml \
+    $TOP_DIR/modules/calibration/data/dev_kit_pix_hooke/lidar_params/lidar16_novatel_extrinsics.yaml \
     50 \
     $TOP_DIR/modules/map/data/$2/ndt_map \
     lidar16
