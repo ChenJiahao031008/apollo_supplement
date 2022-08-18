@@ -287,7 +287,7 @@ PointPillar是基于激光点云进行目标检测的经典开源算法，在apo
 
 2. 数据包解析，将Lidar点云以pcd文件格式保存，odometery，localization_pose话题消息保存成txt文件形式，并通过现行插值获取Lidar时间戳下的位姿信息。
 
-   `"Usage: msf_simple_map_creator.sh [records folder][output folder]  [extrinsic_file] [lidar_type]"`
+   `"Usage: lidar_parse.sh [records folder][output folder]  [extrinsic_file] [lidar_type]"`
 
    ```bash
    bash scripts/lidar_parse.sh /apollo/data/bag/calibration /apollo/data/bag/calibration /apollo/modules/calibration/data/Lincoln2017MKZ/velodyne_params/velodyne128_novatel_extrinsics_example.yaml lidar128
@@ -343,7 +343,7 @@ PointPillar是基于激光点云进行目标检测的经典开源算法，在apo
    运行剔除动态障碍物下的msf建图程序
 
    ```bash
-   bash scripts/msf_simple_map_filter_creator.sh /apollo/data/bag/calibration /apollo/modules/calibration/data/Lincoln2017MKZ/velodyne_params/velodyne128_novatel_extrinsics_example.yaml 10 /apollo/modules/map/data/svl_Borrage_Map lidar128
+   bash scripts/msf_simple_map_filter_creator.sh /apollo/data/bag/calibration /apollo/modules/calibration/data/Lincoln2017MKZ/velodyne_params/velodyne128_novatel_extrinsics_example.yaml 10 /apollo/modules/map/data/svl_Borrage_Map_filter lidar128
    ```
 
    建图效果对比如下：
