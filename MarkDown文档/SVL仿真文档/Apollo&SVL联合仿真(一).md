@@ -30,7 +30,9 @@ SVL在进行仿真期间需要耗费大量GPU的资源来进行渲染，单独�
 
 ### 3.1 仿真环境准备
 
-在[官网](https://www.svlsimulator.com/)下载对应系统的版本，这里以Linux为例进行简要说明。
+> 注 实操线下课程中，已为工控机器配置完备，同学可跳过3.1&3.2
+
+在https://github.com/shenlan2017/ShenLanSVL 下再深蓝学院发布的适配Apollo对仿真器，这里以Linux为例进行简要说明。
 
 1. install dependency 
 
@@ -82,9 +84,9 @@ SVL在进行仿真期间需要耗费大量GPU的资源来进行渲染，单独�
 为验证信息是否发送至Apollo端，我们可以启动Apollo查看
 
 ```bash
-bash scripts/bash docker/scripts/dev_start.sh -l
-bash scripts/bash docker/scripts/dev_into.sh
-bash scripts/bridge.sh
+bash docker/scripts/dev_start.sh -l   #启动本地apollo docker
+bash docker/scripts/dev_into.sh	   #进入容器
+bash scripts/bridge.sh                #启动桥接
 ```
 
 新建终端，进入docker环境中后，启动`cyber_monitor`查看信息如下图则表示信息传输成功。
@@ -100,7 +102,7 @@ bash scripts/bridge.sh
 2. 利用`apollo`地图生成工具，将`basemap.bin`生成`simap.bin`地图文件，主要作用为对`basemap`进行下采样，并可在`dreamviewer`中显示。
 
    ```bash
-   ./bazel-bin/modules/map/tools/sim_map_generator -map_dir=/apollo/modules/map/data/BorregasAve/ -output_dir=/apollo/modules/map/data/BorregasAve
+   ./bazel-bin/modules/map/tools/sim_map_generator --map_dir /apollo/modules/map/data/BorregasAve/ -output_dir=/apollo/modules/map/data/BorregasAve
    ```
    
 3. 利用`apollo`地图生成工具，将`basemap.bin`生成`routingmap.bin`地图文件
@@ -109,7 +111,7 @@ bash scripts/bridge.sh
    bash scripts/generate_routing_topo_graph.sh --map_dir /apollo/modules/map/data/BorregasAve
    ```
 
-至此我们基于RTK定位模式下所用的三种地图均已生成。对于`MSF`和`NDK`定位模式，除了上述的高精地图，我们还需要需要单独的进行建图，在下一章接我们会讲解如何利用SVL中的`Lidar`和`GNSS`数据来进行建图。	
+至此我们基于RTK定位模式下所用的三种地图均已生成。对于`MSF`和`NDK`定位模式，除了上述的高精地图，我们还需要单独建立定位地图，在下一章接我们会讲解如何利用SVL中的`Lidar`和`GNSS`数据来进行建图。	
 
 ## 5 Apollo汽车载入
 
