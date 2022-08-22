@@ -82,8 +82,8 @@ SVL在进行仿真期间需要耗费大量GPU的资源来进行渲染，单独�
 为验证信息是否发送至Apollo端，我们可以启动Apollo查看
 
 ```bash
-bash scripts/bash docker/scripts/dev_start.sh -l
-bash scripts/bash docker/scripts/dev_into.sh
+bash docker/scripts/dev_start.sh -l
+bash docker/scripts/dev_into.sh
 bash scripts/bridge.sh
 ```
 
@@ -109,7 +109,7 @@ bash scripts/bridge.sh
    bash scripts/generate_routing_topo_graph.sh --map_dir /apollo/modules/map/data/BorregasAve
    ```
 
-至此我们基于RTK定位模式下所用的三种地图均已生成。对于`MSF`和`NDK`定位模式，除了上述的高精地图，我们还需要需要单独的进行建图，在下一章接我们会讲解如何利用SVL中的`Lidar`和`GNSS`数据来进行建图。	
+至此我们基于RTK定位模式下所用的三种地图均已生成。对于`MSF`和`NDK`定位模式，除了上述的高精地图，我们还需要单独的进行建图，在下一章接我们会讲解如何利用SVL中的`Lidar`和`GNSS`数据来进行建图。	
 
 ## 5 Apollo汽车载入
 
