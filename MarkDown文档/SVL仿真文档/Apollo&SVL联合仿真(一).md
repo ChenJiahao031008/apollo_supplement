@@ -85,7 +85,7 @@ SVL在进行仿真期间需要耗费大量GPU的资源来进行渲染，单独�
 
 ```bash
 bash docker/scripts/dev_start.sh -l   #启动本地apollo docker
-bash docker/scripts/dev_into.sh	   #进入容器
+bash docker/scripts/dev_into.sh	      #进入容器
 bash scripts/bridge.sh                #启动桥接
 ```
 
