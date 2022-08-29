@@ -47,7 +47,7 @@
    执行建图程序，"Usage: ndt_simple_map_creator.sh [records folder] [extrinsic_file] [zone_id] [map folder] [lidar_type]"
 
    ```bash
-   bash ./scripts/ndt_simple_map_creator.sh /apollo/data/bag/svl /apollo/modules/calibration/data/Lincoln2017MKZ/velodyne_params/velodyne128_novatel_extrinsics_example.yaml 10 /apollo/modules/map/data/svl_map lidar128
+   bash ./scripts/ndt_simple_map_creator.sh /apollo/data/bag/lgsvl /apollo/modules/calibration/data/Lincoln2017MKZ/velodyne_params/velodyne128_novatel_extrinsics_example.yaml 10 /apollo/modules/map/data/svl_map lidar128
    ```
 
    在程序执行过程中，会依次遍历采集数据文件夹内的cyber包，先后对数据包进行**数据解析**、**位姿插值**、**地图生成**这三个步骤
@@ -60,17 +60,22 @@
 
      ![](Apollo&SVL%E8%81%94%E5%90%88%E4%BB%BF%E7%9C%9F(%E4%B8%89)%20%E5%BB%BA%E5%9B%BE%E4%B8%8E%E5%AE%9A%E4%BD%8D.assets/2022-04-06%2020-13-13%20%E7%9A%84%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE.png)
 
-3.   生成定位过程中的可视化地图
+3. 生成定位过程中的可视化地图
+
+   ```bash
+   bash ./scripts/msf_simple_map_creator.sh /apollo/data/bag/lgsvl /apollo/modules/calibration/data/Lincoln2017MKZ/velodyne_params/velodyne128_novatel_extrinsics_example.yaml 10 /apollo/modules/map/data/svl_map lidar128
+   ```
 
    > Note：在进行定位的可视化运行的是‘’MSF Visulizer‘，需用通过`./scripts/ndt_simple_map_creator.sh`来生成所需要的地图，该地图同样也被MSF定位所使用
 
+   ![](Apollo&SVL%E8%81%94%E5%90%88%E4%BB%BF%E7%9C%9F(%E4%B8%89)%20%E5%BB%BA%E5%9B%BE%E4%B8%8E%E5%AE%9A%E4%BD%8D.assets/2022-04-06%2021-21-55%20%E7%9A%84%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE.png)
+
+4. 将1.1.2建立的ndt地图移动至1.1.3建立的local_map地图
+
    ```bash
-   bash ./scripts/msf_simple_map_creator.sh /apollo/data/bag/svl /apollo/modules/calibration/data/Lincoln2017MKZ/velodyne_params/velodyne128_novatel_extrinsics_example.yaml 10 /apollo/modules/map/data/svl_map lidar128
+   cd /apollo/modules/map/data/svl_map
+   mv ndt_map/ local_map/
    ```
-
-    ![](Apollo&SVL%E8%81%94%E5%90%88%E4%BB%BF%E7%9C%9F(%E4%B8%89)%20%E5%BB%BA%E5%9B%BE%E4%B8%8E%E5%AE%9A%E4%BD%8D.assets/2022-04-06%2021-21-55%20%E7%9A%84%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE.png)
-
-    
 
 #### 1.2  运行NDT定位
 
@@ -98,7 +103,9 @@
 
 
 
+> 注意：当地图不可显示并且monitor显示定位正常时，删除缓存文件：`rm -rf cyber/data/map_visual`后重新启动。下图为不正常显示的一个例子
 
+<img src="Apollo&SVL%E8%81%94%E5%90%88%E4%BB%BF%E7%9C%9F(%E4%B8%89)%20%E5%BB%BA%E5%9B%BE%E4%B8%8E%E5%AE%9A%E4%BD%8D.assets/image-20220211223458732.png" style="zoom:50%;" />
 
 
 
