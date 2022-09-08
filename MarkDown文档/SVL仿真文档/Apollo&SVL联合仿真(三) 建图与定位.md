@@ -68,9 +68,7 @@
    bash ./scripts/msf_simple_map_creator.sh /apollo/data/bag/svl /apollo/modules/calibration/data/Lincoln2017MKZ/velodyne_params/velodyne128_novatel_extrinsics_example.yaml 10 /apollo/modules/map/data/svl_map lidar128
    ```
 
-    ![](Apollo&SVL%E8%81%94%E5%90%88%E4%BB%BF%E7%9C%9F(%E4%B8%89)%20%E5%BB%BA%E5%9B%BE%E4%B8%8E%E5%AE%9A%E4%BD%8D.assets/2022-04-06%2021-21-55%20%E7%9A%84%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE.png)
-
-    
+   <img src="Apollo&SVL联合仿真(三) 建图与定位.assets/2022-04-06 20-13-13 的屏幕截图.png" style="zoom:80%;" />
 
 #### 1.2  运行NDT定位
 

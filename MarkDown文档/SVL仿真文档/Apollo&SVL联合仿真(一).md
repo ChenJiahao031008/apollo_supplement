@@ -6,7 +6,7 @@
 
 `SVL simulator`作为自动驾驶的汽车仿真平台，在定制化场景中，利用车载传感器对环境信息的捕获，以桥接的形式将数据信息传送至Apollo,来进行自动驾驶的定位、感知、规划、决策，并将控制信息传至仿真环境中实现对汽车的控制。
 
-![](Apollo&SVL联合仿真.assets/2022-01-25 18-01-39 的屏幕截图.png)
+<img src="Apollo&SVL联合仿真.assets/2022-01-25 18-01-39 的屏幕截图.png" style="zoom: 67%;" />
 
 ## 2 设备硬件配置
 
@@ -115,7 +115,7 @@ bash scripts/bridge.sh
 
 Apollo系统中将林肯车辆作为其默认车辆，在`/apollo/modules/calibration/data/`下将`mkz_example` 文件拷贝被重命名`Lincoln2017MKZ`, 运行`Dreamviewer`即可看到我们新添加的车型。由于我们仿真环境中的车辆配置不同，需要对车辆文件进行重新配置。为了实现任意车型自由切换，无需每次因车型的切换导致系统的参数的重调，我们将有关车型相关的参数均放置 `/apollo/modules/calibration/data/Lincoln2017MKZ` 文件下的车型了。车型选择后，系统会自动调用该车型下的参数来覆盖系统默认参数。
 
-![](Apollo&SVL联合仿真.assets/2022-01-26 09-49-01 的屏幕截图.png)
+<img src="Apollo&SVL联合仿真.assets/2022-01-26 09-49-01 的屏幕截图.png" style="zoom: 67%;" />
 
 ### 5.1 DreamViewer单元模块运行模式更改
 
@@ -172,7 +172,7 @@ bash scripts/bootstrap_lgsvl.sh
 bash scripts/bridge.sh
 ```
 
-![](Apollo&SVL联合仿真.assets/2022-01-26 13-06-23 的屏幕截图.png)
+<img src="Apollo&SVL联合仿真.assets/2022-01-26 13-06-23 的屏幕截图.png" style="zoom: 67%;" />
 
 ### 5.4 Perception环境配置
 
@@ -207,10 +207,12 @@ apollo默认的感知lidar为`"velodyne128"`,跟我们仿真的所用的传感�
 
 运行`Dreamviewer`，在启动完`transform`和 `localization`之后，点击`perception`,该模块启动大约需要一分钟多，在此期间可以新建终端，输入`watch -n 1 nvidia-smi`观察自己GPU的使用情况，模块启动成功后，Dreamviewer如下图所示。
 
-![](Apollo&SVL联合仿真.assets/2022-01-26 21-41-58 的屏幕截图.png)
+<img src="Apollo&SVL联合仿真.assets/2022-01-26 21-41-58 的屏幕截图.png" style="zoom: 67%;" />
 
 ### 5.5 Planning&Prediction&Routing&Control模块
 
 这几个模块的跟我们的车载传感器型号并不存在直接关系，我们直接运行即可。
 
-![](Apollo&SVL联合仿真.assets/2022-01-26 22-16-58 的屏幕截图.png)
+<img src="Apollo&SVL联合仿真.assets/2022-01-26 22-16-58 的屏幕截图.png" style="zoom: 67%;" />
+
+

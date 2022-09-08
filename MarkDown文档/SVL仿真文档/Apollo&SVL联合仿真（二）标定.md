@@ -126,7 +126,8 @@ $ roslaunch cam_collect cam_collect.launch
 
 ![](Apollo&SVL%E8%81%94%E5%90%88%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89%E6%A0%87%E5%AE%9A.assets/2022-04-02%2021-17-27%20%E7%9A%84%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE.png)
 
-<img src="Apollo&SVL%E8%81%94%E5%90%88%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89%E6%A0%87%E5%AE%9A.assets/2022-04-02%2021-14-58%20%E7%9A%84%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE.png" style="zoom:63%;" /><img src="Apollo&SVL%E8%81%94%E5%90%88%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89%E6%A0%87%E5%AE%9A.assets/2022-04-02%2021-20-49%20%E7%9A%84%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE.png" style="zoom: 25%;" />
+<img src="Apollo&SVL%E8%81%94%E5%90%88%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89%E6%A0%87%E5%AE%9A.assets/2022-04-02%2021-14-58%20%E7%9A%84%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE.png" style="zoom:63%;" />
+<img src="Apollo&SVL%E8%81%94%E5%90%88%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89%E6%A0%87%E5%AE%9A.assets/2022-04-02%2021-20-49%20%E7%9A%84%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE.png" style="zoom: 25%;" />
 
 ## 2 Lidar-Camera标定
 
@@ -134,11 +135,11 @@ $ roslaunch cam_collect cam_collect.launch
 
 - 参照文档（一）启动apollo和svl_simulator在cyber_visualizer下检查数据接受是否正常
 
-  ![2022-03-17 10-58-20 的屏幕截图](Apollo&SVL联合仿真（二）标定.assets/2022-03-17 10-58-20 的屏幕截图.png)
+  <img src="Apollo&SVL联合仿真（二）标定.assets/2022-03-17 10-58-20 的屏幕截图.png" style="zoom: 67%;" />
 
 - 寻找标定场地，将汽车开至有墙角的建筑物附近来进行标定，如下图所示
 
-  ![](Apollo&SVL联合仿真（二）标定.assets/2022-03-17 16-38-18 的屏幕截图.png)
+  <img src="Apollo&SVL联合仿真（二）标定.assets/2022-03-17 16-38-18 的屏幕截图.png" style="zoom: 67%;" />
 
 - 录制数据包，录制几秒钟后`Ctrl+C`结束，`*. record.*`文件将保存在`apollo`根目录下
 
@@ -159,7 +160,7 @@ $ roslaunch cam_collect cam_collect.launch
   - `parse:` 选为`camera`
   - `camera`的`channel_name`: 选为我们实际压缩图像的`topic`名，如`/apollo/sensor/camera/front_6mm/image/compressed`
 
-![](Apollo&SVL联合仿真（二）标定.assets/2022-03-17 13-54-47 的屏幕截图.png)
+  <img src="Apollo&SVL联合仿真（二）标定.assets/2022-03-17 13-54-47 的屏幕截图.png" style="zoom: 67%;" />
 
 - 执行数据解析程序 
 
@@ -279,7 +280,7 @@ lidar的数据解析需要借助MSF下的数据解析程序，由于仿真数据
 
  在`calibration`文件夹下会生成`parsed_data`，里面存放了Lidar 点云的pcd文件，用于进行标定。
 
-![](Apollo&SVL联合仿真（二）标定.assets/2022-03-17 15-24-25 的屏幕截图.png)
+<img src="Apollo&SVL联合仿真（二）标定.assets/2022-03-17 15-24-25 的屏幕截图.png" style="zoom: 67%;" />
 
 在apollo的docker容器内运行pcl_viewer对点云数据进行查看
 
@@ -287,7 +288,7 @@ lidar的数据解析需要借助MSF下的数据解析程序，由于仿真数据
   pcl_viewer data/bag/calibration/parsed_data/00000/pcd/1.pcd
 ```
 
-![](Apollo&SVL联合仿真（二）标定.assets/2022-03-17 16-00-46 的屏幕截图.png)
+<img src="Apollo&SVL联合仿真（二）标定.assets/2022-03-17 16-00-46 的屏幕截图.png" style="zoom: 67%;" />
 
 #### 2.2.3 lidar-camera标定
 
@@ -301,11 +302,12 @@ lidar的数据解析需要借助MSF下的数据解析程序，由于仿真数据
 
   ![](Apollo&SVL%E8%81%94%E5%90%88%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89%E6%A0%87%E5%AE%9A.assets/2022-04-02%2020-56-11%20%E7%9A%84%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE.png)
   
-  通过点击`explorer`确定lidar和image的相关文件地址后，点击start![](Apollo&SVL联合仿真（二）标定.assets/2022-03-17 16-27-23 的屏幕截图.png)
+  通过点击`explorer`确定lidar和image的相关文件地址后，点击start!
+  <img src="Apollo&SVL联合仿真（二）标定.assets/2022-03-17 16-27-23 的屏幕截图.png" style="zoom: 67%;" />
 
   如图所示，Lidar的点云强度到墙的边为止，我们可以拿墙的边界和窗户在作为他们之间的参考，来进行对选旋转的`yaw、pitch、row`以及平移`x、y、z`进行调节，最纵标定结果会在终端进行打印。
 
-  ![](Apollo&SVL联合仿真（二）标定.assets/2022-03-17 16-42-27 的屏幕截图.png)
+  <img src="Apollo&SVL联合仿真（二）标定.assets/2022-03-17 16-42-27 的屏幕截图.png" style="zoom: 67%;" />
 
 ## 3 Lidar-Gnss标定
 
@@ -315,15 +317,15 @@ Lidar到Ins的标定，同样可以理解为点云拼接的过程，我们将代
 
 - 参照文档（一）启动apollo和svl_simulator在cyber_visualizer下检查数据接受是否正常
 
-- 寻找标定场地，将汽车开至有墙角的建筑物附近来进行标定，如下图所示
+- 寻找标定场地，将汽车开至有墙角的建筑物附近来进行标定
 
 - 绕建筑物墙体周围转一圈，进行数据采集
+
+  <img src="Apollo&SVL联合仿真（二）标定.assets/51236E8DFF540B290F44AD2D0580079F.jpg" style="zoom: 80%;" />
 
   ```bash
   cyber_recorder record -a -k /apollo/sensor/camera/front_12mm/image/compressed /apollo/sensor/camera/front_6mm/image/compressed -i 600
   ```
-
-  <video src="Apollo&amp;SVL联合仿真（二）标定.assets/lidar_gnss.mp4"></video>
 
 ### 3.2 数据解析
 
@@ -347,11 +349,12 @@ bash scripts/lidar_parse.sh /apollo/data/bag/calibration /apollo/data/bag/lidar_
 
 在标定过程中，建议大家最好是绕着一堵墙进行旋转，目的就是在进行标定过程中，将墙体作为参照物，尽可能的将墙体的点云拼的越薄越好，成一条线。在实车测试中我们可以通过尺子进行测量来他们之间的平移变换，在标定工具中来对旋转进行标定，主要是yaw角。
 
-<video src="Apollo&amp;SVL联合仿真（二）标定.assets/lidar_ins.mp4"></video>
+  <img src="Apollo&SVL联合仿真（二）标定.assets/39D5E5484ADD7CAFA2BEB11289081132.jpg" style="zoom: 80%;" />
+
 
 标定完成后，结果会在终端进行显示。
 
-![](Apollo&SVL联合仿真（二）标定.assets/2022-03-17 23-01-38 的屏幕截图.png)
+<img src="Apollo&SVL联合仿真（二）标定.assets/2022-03-17 23-01-38 的屏幕截图.png" style="zoom: 67%;" />
 
 ## 4 油门标定
 
@@ -434,12 +437,6 @@ bash scripts/lidar_parse.sh /apollo/data/bag/calibration /apollo/data/bag/lidar_
 
     在执行终端的目录下会生成`control_conf.pb.txt` 的控制器相关的配置文件，包括横纵向控制器参数及油门刹车标定表，将该文件拷贝至车辆文件中`/apollo/modules/calibration/data/Lincoln2017MKZ`，在`DreamViewer`中每次重新选择车辆时，会自动将该文件加载至`/apollo/modules/control/conf`文件夹下。
 
-
-
-
-
-
-
 1. ./baz间戳问题，目前IMU时间戳明显落后，查询gnss时间戳	
 
    经查证，IMU时间是错的，不用管。
@@ -447,12 +444,3 @@ bash scripts/lidar_parse.sh /apollo/data/bag/calibration /apollo/data/bag/lidar_
    gnss_odometry之前默认12.5hz，更改为100hz
 
 2. 在apollo中手写一个工具，订阅raw_imu and gnss_odometry，订阅之后在直接吐出去
-
-
-
-
-
-
-
-
-
