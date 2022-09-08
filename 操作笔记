@@ -189,7 +189,7 @@ create_ndt_map  "${DIR_NAME}/pcd" "${DIR_NAME}/pcd/corrected_poses.txt"
 ## 注释掉lossy_map
 # create_lossy_map
 >>>
-bash /apollo/scripts/ndt_simple_map_creator.sh data/bag/localization /apollo/modules/calibration/data/dev_kit_pix_hooke/lidar_params/lidar32_novatel_extrinsics.yaml 50 /apollo/modules/map/data/map_test/ndt_map lidar32
+bash /apollo/scripts/ndt_simple_map_creator.sh data/bag/localization /apollo/modules/calibration/data/dev_kit_pix_hooke/lidar_params/lidar32_novatel_extrinsics.yaml 51 /apollo/modules/map/data/map_test/ndt_map lidar32
 <<<
 mkdir -p /apollo/modules/map/data/map_test/ndt_map/local_map
 mv /apollo/modules/map/data/map_test/ndt_map/map /apollo/modules/map/data/map_test/ndt_map/local_map/map
@@ -199,8 +199,9 @@ mv /apollo/modules/map/data/map_test/ndt_map/config.xml /apollo/modules/map/data
 ## 注释掉删除解析文件和lossless_map部分
 # rm -fr $OUT_MAP_FOLDER/lossless_map
 # rm -fr $OUT_MAP_FOLDER/parsed_data
+#在function create_lossless_map()中添加 --resolution 0.125 \
 >>>
-bash /apollo/scripts/msf_simple_map_creator.sh data/bag/localization /apollo/modules/calibration/data/dev_kit_pix_hooke/lidar_params/lidar32_novatel_extrinsics.yaml 50 /apollo/modules/map/data/map_test lidar32
+bash /apollo/scripts/msf_simple_map_creator.sh data/bag/localization /apollo/modules/calibration/data/dev_kit_pix_hooke/lidar_params/lidar32_novatel_extrinsics.yaml 51 /apollo/modules/map/data/map_test lidar32
 <<<
 #查看/modules/map/data/map_test/lossless_map/image中的图像
 #RTK定位
@@ -302,3 +303,12 @@ cyber_monitor
 bash scripts/bootstrap_lgsvl.sh
 bash scripts/bridge.sh
 watch -n 1 nvidia-smi
+
+#git操作
+git checkout huzhou
+git branch
+git status
+git add .
+#git add xxx
+git commit -m "note"
+git push
