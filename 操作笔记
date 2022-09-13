@@ -12,6 +12,7 @@ docker start apollo_dev_neousys
 bash docker/scripts/dev_into.sh
 cyber_monitor
 bash scripts/bootstrap.sh
+#cyber_monitor上下换行，左右进出，pg翻页，nm逗号项目，ft帧率话题，空格订阅
 
 #其他命令
 watch -n 0.1 nvidia-smi
