@@ -1,43 +1,51 @@
-#开机后首先检查网络
-#enp0s31f6对应robosense/192.168.1.102
-#enp2s0对应chcnav/192.168.33.103
+###准备工作
+##开机后首先检查网络
+#enp0s31f6对应robosense/192.168.1.102/255.255.255.0/192.168.1.1
+#robosense对应雷达/192.168.1.200
+#enp2s0对应chcnav/192.168.33.103/255.255.255.0/192.168.33.1
+#chcnav对应惯导/192.168.33.110/192.168.200.1
+#route中default应该为wlxe0e1a993f06f
+#sudo route del default dev enp0s31f6
+#sudo route del default dev enp2s0
+sudo ./route.sh
 route
-#wlxe0e1a993f06f应该为default
-sudo route del default dev enp0s31f6
-sudo route del default dev enp2s0
 
-#系统启动
+###apollo系统启动
+#alt+a
 cd apollo
+#alt+o
 docker start apollo_dev_neousys
+#alt+a
 bash docker/scripts/dev_into.sh
+#alt+o
 cyber_monitor
 bash scripts/bootstrap.sh
 #cyber_monitor上下换行，左右进出，pg翻页，nm逗号项目，ft帧率话题，空格订阅
 
-#其他命令
+###其他命令
 watch -n 0.1 nvidia-smi
 bash apollo.sh build_opt
 cyber_recorder play -f data/bag/localization/loc.record.00000 -l
 docker stop apollo_dev_neousys
 docker restart apollo_dev_neousys
 sudo reboot
+sudo shutdown now
 
-#canbus模块
-#进入dreamview
+###canbus模块
 bash scripts/canbus.sh
 candump can0
 bash scripts/canbus_teleop.sh
 #m0 m1 g1 wasd键盘控车
 
-#static_transform模块
-#创建/修改modules/calibration/data/dev_kit_pix_hooke/transform/conf/static_transform_conf.pb.txt
+###static_transform模块
+#修改modules/calibration/data/dev_kit_pix_hooke/transform/conf/static_transform_conf.pb.txt
 cyber_launch start modules/transform/launch/static_transform.launch
 
-#camera模块
+###camera模块
 mainboard -d modules/drivers/camera/dag/camera.dag
 cyber_launch start modules/drivers/camera/launch/camera.launch
 cyber_visualizer
-#相机驱动配置
+##相机驱动配置
 sudo apt update
 sudo apt install v4l-utils
 v4l2-ctl --list-devices
@@ -47,75 +55,80 @@ sudo gedit /etc/udev/rules.d/99-webcam.rules
 bash ~/apollo/docker/setup_host/setup_host.sh
 sudo reboot
 ls /dev/camera*
-#相机内参标定
-#准备工作
+
+###相机内参标定
+##准备工作
 sudo apt-get install ros-melodic-usb-cam
 roscd usb_cam
 cd launch
 sudo gedit usb_cam-test.launch 
-#开始标定
+##开始标定
 roslaunch usb_cam usb_cam-test.launch
 rosrun camera_calibration cameracalibrator.py --size 7x6 --square 0.05 image:=/usb_cam/image_raw camera:=/usb_cam
 #将DKRP填入modules/calibration/data/mkz_example/camera_params/front_camera_intrinsics.yaml
 
-#lidar模块
-#雷达驱动配置
-#put rs_driver into path_to_apollo
-#put third_party/rs_driver into path_to_apollo/third_party
-#add line in path_to_apollo/tools/workspace.bzl
-#load("//third_party/rs_driver:workspace.bzl", rs_driver = "repo")
-#and add line in function initialize_third_party()
-#rs_driver()
-#检查雷达模块
+###lidar模块
+##雷达驱动文件
+#put lidar/ into apollo/modules/drivers/
+#put rs_driver/ into apollo/
+#put third_party/ into apollo/third_party
+#add line in apollo/tools/workspace.bzl/ & function initialize_third_party()
+load("//third_party/rs_driver:workspace.bzl", rs_driver = "repo")
+rs_driver()
+##雷达配置文件
+#名称为RSHELIOS，通道坐标为lidar32
+#修改modules/calibration/data/dev_kit_pix_hooke/lidar_conf/rshelios_compensator.pb.txt
+#修改modules/calibration/data/dev_kit_pix_hooke/lidar_conf/rshelios.pb.txt
+#修改modules/calibration/data/dev_kit_pix_hooke/lidar_dag/lidar.dag
+##检查雷达成像
 mainboard -d modules/drivers/lidar/dag/lidar.dag
 cyber_launch start modules/drivers/lidar/launch/driver.launch
 cyber_visualizer
-#雷达-惯导标定
-#录制数据
+
+###雷达外参-惯导标定
+##录制数据
 #在/apollo/sripts文件夹下新建lidar_parse.sh脚本文件
 cyber_recorder record -a -i 600 -o calib_lidar2ins.record
 #将record.00000从apollo目录移动到新建文件夹/apollo/data/bag/calib_lidar2ins
 bash scripts/lidar_parse.sh /apollo/data/bag/calib_lidar2ins /apollo/data/bag/calib_lidar2ins /apollo/modules/calibration/data/dev_kit_pix_hooke/lidar_params/lidar32_novatel_extrinsics.yaml lidar32
 pcl_viewer data/bag/calib_lidar2ins/parsed_data/00000/pcd/1.pcd
-#准备工作
-#安装依赖
+##安装依赖
 sudo apt-get install libglm-dev libglfw3-dev
 sudo apt-get install ros-melodic-geodesy ros-melodic-pcl-ros ros-melodic-nmea-msgs ros-melodic-libg2o
 #interactive slam包已经下载好在 /apollo/catkin_ws
 cd /apollo/catkin_ws
 catkin_make -j4
 roscore
-#开始标定
+##开始标定
 cd /apollo/catkin_ws
 source devel/setup.bash
 rosrun interactive_slam odometry2graph
 #将四元数和测量数据填入modules/calibration/data/dev_kit_pix_hooke/lidar_params/lidar32_novatel_extrinsics.yaml
 
-#雷达-相机外参标定
-#录制数据
+###雷达-相机外参标定
+##录制数据
 cyber_recorder record -a -i 600 -o calib_lidar2camera.record
 #将record.00000从apollo目录移动到新建文件夹/apollo/data/bag/calib_lidar2camera
-#相机数据解析
+##相机数据解析
 #修改/apollo/modules/tools/record_parse_save文件目录下的parser_params.yaml文件
 ./bazel-bin/modules/tools/record_parse_save/record_parse_save
-#雷达数据解析
+##雷达数据解析
 #修改/apollo/sripts/lidar_parse.sh脚本文件的CLOUD_TOPIC为msg_camera.ParseFromString(msg)
 bash scripts/lidar_parse.sh /apollo/data/bag/calib_lidar2camera /apollo/data/bag/calib_lidar2camera /apollo/modules/calibration/data/dev_kit_pix_hooke/lidar_params/lidar32_novatel_extrinsics.yaml lidar32
-#标定工具
-#准备工作
+##准备标定工具
 cd /apollo/lidar_camera_calib
 mkdir build
 cd build
 cmake ..
 make -j4
 #将中的同一帧命名为1放到/apollo/lidar_camera_calib/test中
-#开始标定
+##开始标定
 cd /apollo/lidar_camera_calib/build
 ./lidar_camera_calib_tool
 #将标定数据填入modules/calibration/data/dev_kit_pix_hooke/camera_params/front_6mm_extrinsics.yaml
 
-#油门刹车标定（厂家已标定好）
-#修改清华http源
+###油门刹车标定（厂家已标定好）
+##修改清华http源
 sudo gedit /etc/apt/sources.list
 #修改为如下数据
 deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic main restricted universe multiverse
@@ -126,11 +139,11 @@ deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-backports main restricted
 # deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse
 deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
 # deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
-#安装依赖
+##安装依赖
 sudo cat /etc/apt/sources.list
 sudo apt update
 sudo apt-get install tcl-dev tk-dev python3-tk
-#收集数据
+##收集数据
 bash scripts/canbus_teleop.sh
 #m0 m1 g1 ctrlc
 ./bazel-bin/modules/tools/vehicle_calibration/data_collector
@@ -148,19 +161,21 @@ bash modules/tools/vehicle_calibration/process_data.sh vehicle_calibration_data
 bash modules/tools/vehicle_calibration/result2pb.sh result.csv
 #将该文件拷贝至车辆校正文件/apollo/modules/calibration/data/<对应车型>中
 
-#localization模块
+###localization模块
+###车道线地图
+##录制数据
 #开启Transform，Lidar，GPS，Localization模块
 cyber_recorder record -a -i 600 -o loc.record
-#移动数据
+##移动数据
 cd /apollo
 mkdir -p data/bag/localization -v
 rm -rf data/bag/localization/*
 mv loc.record.00000 data/bag/localization/
-#解析数据
+##解析数据
 ./bazel-bin/modules/tools/map_gen/extract_path ./path.txt data/bag/localization/*
 #修正map_gen_single_lane.py脚本中的LANE_WIDTH参数可以调整车道线宽度
 ./bazel-bin/modules/tools/map_gen/map_gen_single_lane ./path.txt ./base_map.txt 1
-#创建地图
+##创建地图
 mkdir modules/map/data/map_test
 rm -rf path.txt
 mv base_map.txt modules/map/data/map_test/base_map.txt
@@ -169,118 +184,121 @@ bash scripts/generate_routing_topo_graph.sh --map_dir /apollo/modules/map/data/m
 #报错继续执行
 ./bazel-bin/modules/map/tools/sim_map_generator --map_dir=/apollo/modules/map/data/map_test --output_dir=/apollo/modules/map/data/map_test
 #在dreamview中可查看
-#NDT地图
-#准备工作
+
+###NDT地图
+##准备工作
 cd /apollo
 cp scripts/msf_simple_map_creator.sh scripts/ndt_simple_map_creator.sh
-## 将下面这个函数替换掉function create_lossless_map()
-function create_ndt_map() {
-  /apollo/bazel-bin/modules/localization/ndt/map_creation/ndt_map_creator \
-    --pcd_folders $1 \
-    --pose_files $2 \
-    --resolution_type single \
-    --resolution 1 \
-    --resolution_z 1 \
-    --map_folder $OUT_MAP_FOLDER \
-    --zone_id $ZONE_ID
-}
-## 将create_lossless_map替换为create_ndt_map
-# create_lossless_map "${DIR_NAME}/pcd" "${DIR_NAME}/pcd/corrected_poses.txt"
+#将下面这个函数替换掉function create_lossless_map()
+#function create_ndt_map() {
+#  /apollo/bazel-bin/modules/localization/ndt/map_creation/ndt_map_creator \
+#    --pcd_folders $1 \
+#    --pose_files $2 \
+#    --resolution_type single \
+#    --resolution 1 \
+#    --resolution_z 1 \
+#    --map_folder $OUT_MAP_FOLDER \
+#    --zone_id $ZONE_ID
+#}
+#将create_lossless_map替换为create_ndt_map
+#create_lossless_map "${DIR_NAME}/pcd" "${DIR_NAME}/pcd/corrected_poses.txt"
 create_ndt_map  "${DIR_NAME}/pcd" "${DIR_NAME}/pcd/corrected_poses.txt"
-## 注释掉lossy_map
-# create_lossy_map
+#注释掉lossy_map
+#create_lossy_map
 >>>
 bash /apollo/scripts/ndt_simple_map_creator.sh data/bag/localization /apollo/modules/calibration/data/dev_kit_pix_hooke/lidar_params/lidar32_novatel_extrinsics.yaml 51 /apollo/modules/map/data/map_test/ndt_map lidar32
 <<<
 mkdir -p /apollo/modules/map/data/map_test/ndt_map/local_map
 mv /apollo/modules/map/data/map_test/ndt_map/map /apollo/modules/map/data/map_test/ndt_map/local_map/map
 mv /apollo/modules/map/data/map_test/ndt_map/config.xml /apollo/modules/map/data/map_test/ndt_map/local_map/config.xml
-#MSF地图
+
+###MSF地图
 #修改scripts/msf_simple_map_creator.sh文件如下：
-## 注释掉删除解析文件和lossless_map部分
-# rm -fr $OUT_MAP_FOLDER/lossless_map
-# rm -fr $OUT_MAP_FOLDER/parsed_data
+#注释掉删除解析文件和lossless_map部分
+#rm -fr $OUT_MAP_FOLDER/lossless_map
+#rm -fr $OUT_MAP_FOLDER/parsed_data
 #在function create_lossless_map()中添加 --resolution 0.125 \
 >>>
 bash /apollo/scripts/msf_simple_map_creator.sh data/bag/localization /apollo/modules/calibration/data/dev_kit_pix_hooke/lidar_params/lidar32_novatel_extrinsics.yaml 51 /apollo/modules/map/data/map_test lidar32
 <<<
 #查看/modules/map/data/map_test/lossless_map/image中的图像
-#RTK定位
+
+###RTK定位
 cyber_launch start modules/localization/launch/rtk_localization.launch
 ./bazel-bin/modules/tools/sensor_calibration/ins_stat_publisher
 ./bazel-bin/modules/tools/sensor_calibration/odom_publisher
-#NDT定位
-#准备工作
+
+###NDT定位
+##准备工作
 #修改位置：文件/apollo/modules/localization/ndt/ndt_localization.h第136行
-# std::list<TimeStampPose> odometry_buffer_;
+#std::list<TimeStampPose> odometry_buffer_;
 std::list<TimeStampPose,Eigen::aligned_allocator<TimeStampPose>> odometry_buffer_;
-#编译
 bash apollo.sh build_opt localization
-#启动定位
+##启动定位
 cyber_launch start modules/localization/launch/ndt_localization.launch
 cyber_launch start modules/localization/launch/msf_visualizer.launch
 
-#perception模块
-#雷达感知
-#准备工作
+###perception模块
+###雷达感知
+##准备工作
 #将6.0edu感知模块拷贝到modules
 bash apollo.sh build_opt   
->>>
-#CNN segmentation算法
-#准备工作
+
+###CNN segmentation算法
+##准备工作
 #修改modules/perception/production/conf/perception/lidar/velodyne16_segmentation_conf.pb.txt
 #修改modules/perception/production/conf/perception/lidar/recognition_conf.pb.txt
 #修改modules/perception/production/data/perception/lidar/models/multi_lidar_fusion/mlf_engine.conf
 #修改modules/perception/production/conf/perception/fusion/fusion_component_conf.pb.txt
-#创建/修改dag启动文件 ：/apollo/modules/perception/production/dag/文件夹的 dag_streaming_perception_dev_kit_lidar.dag 
-#创建/修改dag启动文件 ：/apollo/modules/calibration/data/dev_kit_pix_hooke/perception_dag/dag_streaming_perception_dev_kit_lidar.dag
-#开始执行
+#修改dag启动文件 ：/apollo/modules/perception/production/dag/文件夹的 dag_streaming_perception_dev_kit_lidar.dag 
+#修改dag启动文件 ：/apollo/modules/calibration/data/dev_kit_pix_hooke/perception_dag/dag_streaming_perception_dev_kit_lidar.dag
+##开始执行
 mainboard -d modules/perception/production/dag/dag_streaming_perception_dev_kit_lidar.dag
 watch -n 0.1 nvidia-smi
 #在cyber_monitor观察到/apollo/perception/obstacles中有数据输出
-<<<
->>>
-#Point Pillar算法
-#准备工作
+
+###Point Pillar算法
+##准备工作
 #修改modules/perception/production/conf/perception/lidar/velodyne16_detection_conf.pb.txt
 #修改modules/perception/production/conf/perception/lidar/recognition_conf.pb.txt
 #修改modules/perception/production/data/perception/lidar/models/multi_lidar_fusion/mlf_engine.conf
 #修改modules/perception/production/conf/perception/fusion/fusion_component_conf.pb.txt
-#创建/修改dag启动文件 ：apollo/modules/perception/production/dag/文件夹的 dag_streaming_perception_lidar.dag 
-#开始执行
+#修改dag启动文件 ：apollo/modules/perception/production/dag/文件夹的 dag_streaming_perception_lidar.dag 
+##开始执行
 mainboard -d modules/perception/production/dag/dag_streaming_perception_lidar.dag
 watch -n 0.1 nvidia-smi
 #在cyber_monitor观察到/apollo/perception/obstacles中有数据输出
-<<<
-#相机感知
-#准备工作
+
+###相机感知
+##准备工作
 #修改文件位置为：modules/perception/production/conf/perception/camera/fusion_camera_detection_component.pb.txt
-#创建/调整启动文件：modules/perception/production/dag/dag_streaming_perception_dev_kit_camera.dag
+#调整启动文件：modules/perception/production/dag/dag_streaming_perception_dev_kit_camera.dag
 mainboard -d modules/drivers/camera/dag/camera.dag
 mainboard -d /apollo/modules/perception/production/dag/dag_streaming_perception_dev_kit_camera.dag
 watch -n 0.1 nvidia-smi
 #在cyber_monitor观察到/apollo/perception/obstacles中有数据输出
-#雷达相机融合感知
-#创建/修改文件：modules/perception/production/conf/perception/camera/fusion_camera_detection_component.pb.txt
-#创建/修改文件：modules/perception/production/conf/perception/fusion/fusion_component_conf.pb.txt
-#创建/修改启动文件：modules/perception/production/dag/dag_streaming_perception.dag
+
+###雷达相机融合感知
+#修改文件：modules/perception/production/conf/perception/camera/fusion_camera_detection_component.pb.txt
+#修改文件：modules/perception/production/conf/perception/fusion/fusion_component_conf.pb.txt
+#修改启动文件：modules/perception/production/dag/dag_streaming_perception.dag
 mainboard -d modules/drivers/camera/dag/camera.dag
 mainboard -d /apollo/modules/perception/production/dag/dag_streaming_perception.dag
 watch -n 0.1 nvidia-smi
 #在cyber_monitor观察到/apollo/perception/obstacles中有数据输出
 
-#prediction模块
+###prediction模块
 cyber_launch start modules/prediction/launch/prediction.launch
 #观察cyber_monitor的/apollo/prediction通道是否正常工作输出
 
-#routing模块
+###routing模块
 cyber_launch start modules/routing/launch/routing.launch
 
-#planning模块
+###planning模块
 cyber_launch start modules/planning/launch/planning.launch
 
-#control模块
-#循迹
+###control模块
+##循迹
 bash scripts/rtk_recorder.sh setup
 bash scripts/rtk_recorder.sh start
 #ctrlc
@@ -290,8 +308,8 @@ bash scripts/rtk_player.sh start
 #只是根据时差和距离在上次记录的轨迹点里面找到合适的范围，将范围内的轨迹点的数据都传入planningdata后发布给下面的控制模块计算具体的控制量
 cyber_launch start modules/control/launch/control.launch
 
-#联合仿真
-#准备工作
+###联合仿真
+##准备工作
 sudo apt install libvulkan1
 ./bazel-bin/modules/map/tools/sim_map_generator --map_dir /apollo/modules/map/data/BorregasAve/ -output_dir=/apollo/modules/map/data/BorregasAve
 bash scripts/generate_routing_topo_graph.sh --map_dir /apollo/modules/map/data/BorregasAve
@@ -299,13 +317,13 @@ bash scripts/generate_routing_topo_graph.sh --map_dir /apollo/modules/map/data/B
 #将modules/transform/conf/static_transform_conf.pb.txt复制到/apollo/modules/calibration/data/Lincoln2017MKZ下新建transform_conf文件夹
 #新建localization_conf文件夹，modules/localization/conf/localization.conf拷贝到当前文件夹下
 #对modules/perception/production/conf/perception/文件下中有关激光雷达的参数进行配置
-#运行仿真
+##运行仿真
 cyber_monitor
 bash scripts/bootstrap_lgsvl.sh
 bash scripts/bridge.sh
 watch -n 1 nvidia-smi
 
-#git操作
+###git操作
 git checkout huzhou
 git branch
 git status
@@ -313,3 +331,20 @@ git add .
 #git add xxx
 git commit -m "note"
 git push
+
+###ssh操作
+ssh-keygen -t rsa -C "1476133654@qq.com"
+cat .ssh/id_rsa.pub
+#复制key到setting/ssh key
+ssh -T git@github.com
+git clone git@github.com:ChenJiahao031008/apollo_supplement.git
+
+
+
+
+
+
+
+
+
+

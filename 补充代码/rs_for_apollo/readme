@@ -1,0 +1,10 @@
+put rs_driver into path_to_apollo
+put third_party/rs_driver into path_to_apollo/third_party
+
+add line in path_to_apollo/tools/workspace.bzl
+load("//third_party/rs_driver:workspace.bzl", rs_driver = "repo")
+
+and add line in function initialize_third_party()
+
+rs_driver()
+
