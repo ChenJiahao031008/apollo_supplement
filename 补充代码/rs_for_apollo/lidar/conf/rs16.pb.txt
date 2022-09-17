@@ -9,6 +9,6 @@ end_angle: 360
 min_distance: 0
 max_distance: 200
 cut_angle: 0
-pointcloud_channel: "/apollo/sensor/lidar16/PointCloud2"
-scan_channel: "/apollo/sensor/lidar16/Scan"
+pointcloud_channel: "/apollo/sensor/rs16/PointCloud2"
+scan_channel: "/apollo/sensor/rs16/Scan"
 use_lidar_clock: false
