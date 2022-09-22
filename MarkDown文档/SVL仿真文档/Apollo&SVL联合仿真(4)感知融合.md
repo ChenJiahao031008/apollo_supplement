@@ -119,7 +119,7 @@ cnnseg的模型权重文件位于：`modules/perception/production/data/percepti
 
 4. 启动感知模块，等待待显存稳定（一般在2分钟左右）
 
-   ```shell
+   ```bash
    cyber_launch start /apollo/modules/perception/production/launch/dev_kit_perception_lidar.launch
    ```
 
@@ -137,7 +137,7 @@ PointPillar是基于激光点云进行目标检测的经典开源算法，在apo
 
 1. 在3.1`CNNSegmentation`配置文件的基础上，仅修改 `/apollo/modules/perception/production/dag/` 文件夹下的 `dag_streaming_perception_dev_kit_lidar.dag` 文件，将`SegmentationComponent`更换为`DetectionComponent`。
 
-     ```shell
+     ```bash
      module_config {
        module_library : "/apollo/bazel-bin/modules/perception/onboard/component/libperception_component_lidar.so"
      
@@ -179,7 +179,7 @@ PointPillar是基于激光点云进行目标检测的经典开源算法，在apo
 
 2. 启动感知模块，等待待显存稳定（一般在2分钟左右）
 
-     ```shell
+     ```bash
      cyber_launch start /apollo/modules/perception/production/launch/dev_kit_perception_lidar.launch
      ```
 

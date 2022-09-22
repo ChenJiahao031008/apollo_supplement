@@ -23,14 +23,14 @@ clang >= 9
 
 1、克隆此项目
 
-```shell
+```bash
 $ git clone https://github.com/calibtoolkit/calibration_kit.git
 $ cd calibration_kit
 ```
 
 2、安装编译所需的依赖项
 
-```shell
+```bash
 $ sudo apt install libboost-dev libopencv-dev libeigen3-dev libpcl-dev libceres-dev libyaml-cpp-dev
 ```
 
@@ -38,14 +38,14 @@ $ sudo apt install libboost-dev libopencv-dev libeigen3-dev libpcl-dev libceres-
 
 3、执行构建
 
-```shell
+```bash
 $ cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug 
 $ cmake --build build --parallel 4
 ```
 
 4、执行程序
 
-```shell
+```bash
 $ ./build/calibration_kit
 ```
 
@@ -74,14 +74,14 @@ $ sudo sh docker/calib_kit_docker_start.sh
 
 4.执行构建
 
-```shell
+```bash
 $ cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug 
 $ cmake --build build --parallel 4
 ```
 
 5.执行程序
 
-```shell
+```bash
 $ ./build/calibration_kit
 ```
 

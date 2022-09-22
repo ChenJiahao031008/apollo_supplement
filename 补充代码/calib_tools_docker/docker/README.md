@@ -49,7 +49,7 @@ bash build_docker.sh
 
 运行脚本文件：
 
-```shell
+```bash
 bash run_into.sh
 ```
 

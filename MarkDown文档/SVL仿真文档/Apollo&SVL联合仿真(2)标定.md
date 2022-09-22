@@ -76,7 +76,7 @@ docker-compose down && docker-compose up
 
 在容器中打开终端
 
-```shell
+```bash
 $ cd /worksapce/calibration_kit/
 $ cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug 
 $ cmake --build build --parallel 4
@@ -84,7 +84,7 @@ $ cmake --build build --parallel 4
 
 #### 1.8 运行标定工具
 
-```shell
+```bash
 $ ./build/calibration_kit
 ```
 
@@ -106,14 +106,14 @@ $ ./build/calibration_kit
 
 **1.1.1** 启动camera
 
-```shell
+```bash
 $ cd /workspace/catkin_ws && catkin_make
 $ roslaunch usb_cam usb_cam.launch
 ```
 
 **1.1.2**  运行图像采集程序
 
-```shell
+```bash
 # 新建终端
 $ roslaunch cam_collect cam_collect.launch
 ```
