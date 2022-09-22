@@ -269,6 +269,9 @@ bash apollo.sh build_opt
 ##开始执行
 mainboard -d modules/perception/production/dag/dag_streaming_perception_dev_kit_lidar.dag
 watch -n 0.1 nvidia-smi
+cyber_recorder record -a -i 600 -o lidar_seg.record
+#将record.*从apollo目录移动到新建文件夹/apollo/data/lidar_seg
+cyber_recorder play -f data/bag/lidar_seg/lidar_seg.record.* -l
 #在cyber_monitor观察到/apollo/perception/obstacles中有数据输出
 
 ###Point Pillar算法
@@ -281,6 +284,9 @@ watch -n 0.1 nvidia-smi
 ##开始执行
 mainboard -d modules/perception/production/dag/dag_streaming_perception_lidar.dag
 watch -n 0.1 nvidia-smi
+cyber_recorder record -a -i 600 -o lidar_pillar.record
+#将record.*从apollo目录移动到新建文件夹/apollo/data/lidar_pillar
+cyber_recorder play -f data/bag/lidar_pillar/lidar_pillar.record.* -l
 #在cyber_monitor观察到/apollo/perception/obstacles中有数据输出
 
 ###相机感知
@@ -290,6 +296,9 @@ watch -n 0.1 nvidia-smi
 mainboard -d modules/drivers/camera/dag/camera.dag
 mainboard -d /apollo/modules/perception/production/dag/dag_streaming_perception_dev_kit_camera.dag
 watch -n 0.1 nvidia-smi
+cyber_recorder record -a -i 600 -o camera_perception.record
+#将record.*从apollo目录移动到新建文件夹/apollo/data/camera_perception
+cyber_recorder play -f data/bag/camera_perception/camera_perception.record.* -l
 #在cyber_monitor观察到/apollo/perception/obstacles中有数据输出
 
 ###雷达相机融合感知
@@ -299,6 +308,9 @@ watch -n 0.1 nvidia-smi
 mainboard -d modules/drivers/camera/dag/camera.dag
 mainboard -d /apollo/modules/perception/production/dag/dag_streaming_perception.dag
 watch -n 0.1 nvidia-smi
+cyber_recorder record -a -i 600 -o fusion_perception.record
+#将record.*从apollo目录移动到新建文件夹/apollo/data/fusion_perception
+cyber_recorder play -f data/bag/fusion_perception/fusion_perception.record.* -l
 #在cyber_monitor观察到/apollo/perception/obstacles中有数据输出
 
 ###prediction模块
