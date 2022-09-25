@@ -1,133 +1,14 @@
 ## Apollo&SVL联合仿真（二）标定
 
-### 1 简介
+### 简介
 
-在实车中，由于安装误差以及传感器各自的参数不同导致这些传感器参数均需要我们进行标定来获取，构建出一个符合汽车自身的TF树。相机的内参标定包含畸变系数以及焦距大小，以深蓝学院的小车为例，传感器之间的外参包含Lidar-Imu,Camera到Lidar之间的变换。拿到这些外参后，方便我们后续的定位建图以及感知融合等，以下图为例，这是外参好坏所建立的NDT地图的差异，场景-腾讯众创空间A座停车场附近。
+在实车中，由于安装误差以及传感器各自的参数不同导致这些传感器参数均需要我们通过标定来获取，构建出一个符合汽车自身的TF树。相机的内参标定包含畸变系数以及焦距大小，以深蓝学院的小车为例，传感器之间的外参包含Lidar-Imu,Camera到Lidar之间的变换。拿到这些外参后，方便我们后续的定位建图以及感知融合等功能的实现。在实车操作之前我们先在仿真环境中进行Lidar-Imu,Lidar-Camera和油门刹车的标定。
 
+**由于相机的标定需要标定板数据采集，这个步骤在仿真中无法进行操作，我们将在实车的实践中进行。**
 
+## 1 Lidar-Camera标定
 
-## 1 启动标定工具
-
-深蓝学院公布的开源标定工具[calibration_kit](https://github.com/calibtoolkit/calibration_kit)，其所需要的配置环境可能与自身电脑并不十分匹配，导致需要额外的环境配置问题，这里通过Docker将标定工具所需的环境进行打包，在Docker建立的容器中即可运行标定工具。
-
-#### 1.1安装Docker
-
-请参考[Docker官方文档](https://docs.docker.com/engine/install/ubuntu/)完成`Docker`环境的安装
-
-**安装完成后, 请务必进行如下操作**, 以保证可以无脑跟随后续文档进行操作:
-
-**将当前用户加入Docker Group**
-
-为了能在非`sudo`模式下使用`Docker`, 需要将当前用户加入`Docker Group`.
-
-1. 执行命令:
-
-2. ```
-     sudo usermod -aG docker $USER
-     ```
-
-#### 1.2 安装Docker-Compose
-
-`Docker-Compose`是基于Docker解决方案的Orchestrator.
-
-请参考[Docker Compose官方文档](https://docs.docker.com/compose/install/)完成`Docker-Compose`环境的安装
-
-#### 1.3 获取镜像
-
-在安装完成`Docker`以及`Docker-Compose`之后，需要拉取所需镜像.
-
-**注意**: 执行第1条命令时，**需要输入密码!!!需要输入密码!!!需要输入密码!!!**, 密码请看!!!
-
-```
-# 1. login to Docker registry
-docker login --username=Jiahao031008 
-# 2. then download images:
-docker pull jiahao031008/calib-tools:v0
-```
-
-#### 1.4 克隆项目
-
-```
-$ git clone https://github.com/calibtoolkit/calibration_kit.git
-$ cd calibration_kit
-```
-
-#### 1.5 启动实例
-
-在**本地shell中**运行脚本文件：
-
-```
-bash run_into.sh
-```
-
-注意到终端进入了`root@<id>`则表明成功。
-
-![](Apollo&SVL%E8%81%94%E5%90%88%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89%E6%A0%87%E5%AE%9A.assets/image-20220411142308337.png)
-
-#### 1.6 编译标定程序
-
-Docker Workspace会将当前Repo`workspace`文件夹映射到Docker Instance`/workspace`目录下. 因此需要检查
-
-可在Docker Workspace中执行如下命令, 确保两者--`当前Repo workspace文件夹`与`Docker Instance /workspace`文件夹--的一致性
-
-在容器中打开终端
-
-```shell
-$ cd /worksapce/calibration_kit/
-$ cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug 
-$ cmake --build build --parallel 4
-```
-
-#### 1.7运行标定工具
-
-```shell
-$ ./build/calibration_kit
-```
-
-![](Apollo&SVL%E8%81%94%E5%90%88%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89%E6%A0%87%E5%AE%9A.assets/2022-04-02%2020-50-58%20%E7%9A%84%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE.png)
-
-## 1 Camera内参标定
-
-在SVL仿真中，由于无法进行标定，这里以真实环境中采集的数据为例对camera内参标定工具的使用进行介绍，标定板采用的是7×6_50×50大小的棋盘格，采集包含各种怼脸造作以及远近不等的旋转图像。
-
-#### 1.1 图像采集
-
-采集人员分为两组，一组使用ROS程序进行采集；另一组手持棋盘格，在图像视野范围内进行操作和移动。示例使用的标定板为7×6_50×50大小的标准棋盘格进行。
-
-手持棋盘格要求：
-
-+ 每次采集尽量保持稳定，最终成像光线适中，图像清晰；
-+ 手持棋盘格时不能对棋盘格进行遮挡，不能离开相机视野范围内；
-+ 采集图像类型需要丰富多样，包含：近距离图像、中距离图像、远距离图像、左右倾斜图像、上下倾斜图像、轻微旋转图像、较大旋转图像、相机靠近左视野边缘图像、相机靠近右视野边缘图像等；
-+ 采集有效图像的数量在15-35张左右；
-
-**1.1.1** 启动camera
-
-```shell
-cd ~/Desktop/image_collect && catkin_make
-roslaunch usb_cam usb_cam.launch
-```
-
-**1.1.2**  运行图像采集程序
-
-```shell
-# 新建终端
-$ roslaunch cam_collect cam_collect.launch
-```
-
-按`空格`键即可将当前帧图像.png按顺序保存在data/camera_0文件夹下
-
-#### 1.2 开始标定
-
-根据窗口提示，确定`Input_directory`,`file-extension`,`camera_name`,`width:7`,`height:6`，`pinhole`,点击`start`开始进行标定
-
-![](Apollo&SVL%E8%81%94%E5%90%88%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89%E6%A0%87%E5%AE%9A.assets/2022-04-02%2021-17-27%20%E7%9A%84%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE.png)
-
-<img src="Apollo&SVL%E8%81%94%E5%90%88%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89%E6%A0%87%E5%AE%9A.assets/2022-04-02%2021-14-58%20%E7%9A%84%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE.png" style="zoom:63%;" /><img src="Apollo&SVL%E8%81%94%E5%90%88%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89%E6%A0%87%E5%AE%9A.assets/2022-04-02%2021-20-49%20%E7%9A%84%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE.png" style="zoom: 25%;" />
-
-## 2 Lidar-Camera标定
-
-### 2.1   传感器数据收集
+### 1.1   传感器数据收集
 
 - 参照文档（一）启动apollo和svl_simulator在cyber_visualizer下检查数据接受是否正常
 
@@ -145,9 +26,9 @@ $ roslaunch cam_collect cam_collect.launch
 
   在`\apollo\data\bag`目录下新建`calibration`文件夹，将录制好的bag包文件粘贴进来。
 
-### 2.2 数据解析
+### 1.2 数据解析
 
-#### 2.2.1 图像数据解析
+#### 1.2.1 图像数据解析
 
 数据解析用到了`apollo`自带的解析程序，将我们的录制包中的`image`保存成`jpeg`格式的图片
 
@@ -166,7 +47,7 @@ $ roslaunch cam_collect cam_collect.launch
 
   解析完成后，会将图像保存在我们数据包的上一级目录下文件夹下`data_camera_6mm_front`。
 
-#### 2.2.2 Lidar数据解析
+#### 1.2.2 Lidar数据解析
 
 lidar的数据解析需要借助MSF下的数据解析程序，由于仿真数据发过来的数据跟其消息的大小不一致，我们需要对apollo内部程序稍作更改即可
 
@@ -286,7 +167,7 @@ lidar的数据解析需要借助MSF下的数据解析程序，由于仿真数据
 
 ![](Apollo&SVL联合仿真（二）标定.assets/2022-03-17 16-00-46 的屏幕截图.png)
 
-#### 2.2.3 lidar-camera标定
+#### 1.2.3 lidar-camera标定
 
 1. 任选一帧采集数据，拷贝至标定工具下的`test`文件夹下，并重命名为`1.jpeg`和`1.pcd`
 
@@ -306,11 +187,11 @@ lidar的数据解析需要借助MSF下的数据解析程序，由于仿真数据
 
 ![](Apollo&SVL联合仿真（二）标定.assets/2022-03-17 16-42-27 的屏幕截图.png)
 
-## 3 Lidar-Gnss标定
+## 2 Lidar-Gnss标定
 
 Lidar到Ins的标定，同样可以理解为点云拼接的过程，我们将代码写在`/apollo/modules/localization/msf/local_tool/map_creation/`目录下，大约200行的一个程序`lidar_camera_calib.cc`
 
-### 3.1 传感器数据收集
+### 2.1 传感器数据收集
 
 - 参照文档（一）启动apollo和svl_simulator在cyber_visualizer下检查数据接受是否正常
 
@@ -324,7 +205,7 @@ Lidar到Ins的标定，同样可以理解为点云拼接的过程，我们将代
 
   <video src="Apollo&amp;SVL联合仿真（二）标定.assets/lidar_gnss.mp4"></video>
 
-### 3.2 数据解析
+### 2.2 数据解析
 
 - 在`/apollo/data/bag/`目录下下新建`lidar_ins_calibration`文件夹，将录制的数据包粘贴进去。
 
@@ -334,7 +215,7 @@ Lidar到Ins的标定，同样可以理解为点云拼接的过程，我们将代
 bash scripts/lidar_parse.sh /apollo/data/bag/calibration /apollo/data/bag/lidar_ins_calibration lidar128
 ```
 
-### 3.3 Lidar-Ins标定
+### 2.3 Lidar-Ins标定
 
 ```bash
 cd /home/t/Desktop/lidar2Ins
@@ -356,11 +237,11 @@ rosrun interactive_slam odometry2graph
 
 `/apollo/modules/calibration/data/Lincoln2017MKZ/velodyne_params/velodyne128_novatel_extrinsics_example.yaml`
 
-## 4 油门标定
+## 3 油门标定
 
 车辆在某一速度基础上，需要通过车辆的油门和刹车来获得期望加速度。汽车在不同的行驶速度下，想要获取相同的加速度，则其油门和刹车的大小也会不同。我们需要获取汽车速度和加速度之间的关系来更好的实现对车辆的控制，本节内容利用apollo的标定工具来实现汽车的油门刹车标定表。
 
-#### 4.1 油门数据采集
+#### 3.1 油门数据采集
 
 1. 启动SVL， 建立仿真车辆同apollo的通信，在cyber_monitor中查看汽车发来的数据
 
