@@ -29,6 +29,7 @@ docker stop apollo_dev_neousys
 docker restart apollo_dev_neousys
 sudo reboot
 sudo shutdown now
+sudo apt-get -y install terminator&tree
 
 ###canbus模块
 bash scripts/canbus.sh
