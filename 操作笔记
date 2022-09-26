@@ -71,6 +71,11 @@ rosrun camera_calibration cameracalibrator.py --size 7x6 --square 0.05 image:=/u
 #将DKRP填入modules/calibration/data/mkz_example/camera_params/front_camera_intrinsics.yaml
 ##标定方式2：使用calibration_kit)
 ##本地配置
+git clone https://github.com/calibtoolkit/calibration_kit.git
+cd calibration_kit
+sudo apt install libboost-dev libopencv-dev libeigen3-dev libpcl-dev libceres-dev libyaml-cpp-dev
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug 
+cmake --build build --parallel 4
 #cmake升级
 https://blog.csdn.net/Boys_Wu/article/details/104940575
 #g++升级
