@@ -69,26 +69,49 @@ sudo gedit usb_cam-test.launch
 roslaunch usb_cam usb_cam-test.launch
 rosrun camera_calibration cameracalibrator.py --size 7x6 --square 0.05 image:=/usb_cam/image_raw camera:=/usb_cam
 #将DKRP填入modules/calibration/data/mkz_example/camera_params/front_camera_intrinsics.yaml
-##标定方式2：使用calibration_kit)
+##标定方式2：使用calibration_kit
 ##本地配置
-git clone https://github.com/calibtoolkit/calibration_kit.git
-cd calibration_kit
-sudo apt install libboost-dev libopencv-dev libeigen3-dev libpcl-dev libceres-dev libyaml-cpp-dev
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug 
-cmake --build build --parallel 4
 #cmake升级
 https://blog.csdn.net/Boys_Wu/article/details/104940575
+wget https://github.com/Kitware/CMake/releases/download/v3.21.4/cmake-3.21.4-linux-x86_64.tar.gz
+tar -xzvf cmake-3.21.4-linux-x86_64.tar.gz
+sudo mv cmake-3.21.4-linux-x86_64 /opt/cmake-3.21.4  
+sudo ln -sf /opt/cmake-3.21.4/bin/* /usr/bin/
+cmake --version
+sudo gedit ~/.bashrc
+export PATH=$PATH:/opt/cmake-3.21.4/bin
+source ~/.bashrc 
 #g++升级
 https://blog.csdn.net/tytyvyibijk/article/details/123074333
+add-apt-repository ppa:ubuntu-toolchain-r/test
+sudo apt update
+sudo apt install gcc-11 g++-11
+ls /usr/bin/gcc*
+ls /usr/bin/g++*
+sudo update-alternatives --remove-all gcc
+sudo update-alternatives --remove-all g++
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 1
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 10
+sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 1
+sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 10
+gcc --version
+g++ --version
 #clang升级
 sudo apt-get install clang
+#安装依赖
+sudo apt install libboost-dev libopencv-dev libeigen3-dev libpcl-dev libceres-dev libyaml-cpp-dev
+##执行编译
+git clone https://github.com/calibtoolkit/calibration_kit.git
+cd calibration_kit
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug 
+cmake --build build --parallel 4
 ##启动相机
 cd ~/Desktop/image_collect && catkin_make
 source devel/setup.bash
 roslaunch usb_cam usb_cam.launch
 ##图像采集
-#按空格键即可将当前帧图像（`.png`格式存储）按顺序保存在`data/camera_0`文件夹下。
-#完成所有数据采集后，需要将该文件夹复制到标定工具箱对应的`test_data/`目录下。
+#按空格键即可将当前帧图像(.png格式)按顺序保存在data/camera_0文件夹下。
+#完成所有数据采集后，需要将该文件夹复制到标定工具箱对应的test_data/目录下。
 roslaunch cam_collect cam_collect.launch
 ##开始标定
 cd calibration_kit
