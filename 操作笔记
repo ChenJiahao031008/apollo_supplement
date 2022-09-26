@@ -57,7 +57,8 @@ bash ~/apollo/docker/setup_host/setup_host.sh
 sudo reboot
 ls /dev/camera*
 
-###相机内参标定(docker外)
+###相机内参标定
+##标定方式1：使用ROS工具
 ##准备工作
 sudo apt-get install ros-melodic-usb-cam
 roscd usb_cam
@@ -67,6 +68,26 @@ sudo gedit usb_cam-test.launch
 ##开始标定
 roslaunch usb_cam usb_cam-test.launch
 rosrun camera_calibration cameracalibrator.py --size 7x6 --square 0.05 image:=/usb_cam/image_raw camera:=/usb_cam
+#将DKRP填入modules/calibration/data/mkz_example/camera_params/front_camera_intrinsics.yaml
+##标定方式2：使用calibration_kit)
+##本地配置
+#cmake升级
+https://blog.csdn.net/Boys_Wu/article/details/104940575
+#g++升级
+https://blog.csdn.net/tytyvyibijk/article/details/123074333
+#clang升级
+sudo apt-get install clang
+##启动相机
+cd ~/Desktop/image_collect && catkin_make
+source devel/setup.bash
+roslaunch usb_cam usb_cam.launch
+##图像采集
+#按空格键即可将当前帧图像（`.png`格式存储）按顺序保存在`data/camera_0`文件夹下。
+#完成所有数据采集后，需要将该文件夹复制到标定工具箱对应的`test_data/`目录下。
+roslaunch cam_collect cam_collect.launch
+##开始标定
+cd calibration_kit
+./build/calibration_kit
 #将DKRP填入modules/calibration/data/mkz_example/camera_params/front_camera_intrinsics.yaml
 
 ###lidar模块
@@ -123,16 +144,21 @@ cyber_recorder record -a -i 600 -o calib_lidar2camera.record
 >>>
 bash scripts/lidar_parse.sh /apollo/data/bag/calib_lidar2camera /apollo/data/bag/calib_lidar2camera /apollo/modules/calibration/data/dev_kit_pix_hooke/lidar_params/lidar32_novatel_extrinsics.yaml lidar32
 <<<
-##准备标定工具(docker外)
+#将中的同一帧命名为1放到/apollo/lidar_camera_calib/test中
+#将modules/calibration/data/dev_kit_pix_hooke/camera_params/下的相机参数front_6mm_extrinsics.yaml和 front_6mm_intrinsics.yaml拷贝到test文件夹下
+##标定方式1：使用ROS工具
 cd /apollo/lidar_camera_calib
 mkdir build
 cd build
 cmake ..
 make -j4
-#将中的同一帧命名为1放到/apollo/lidar_camera_calib/test中
 ##开始标定
 cd /apollo/lidar_camera_calib/build
 ./lidar_camera_calib_tool
+#将标定数据填入modules/calibration/data/dev_kit_pix_hooke/camera_params/front_6mm_extrinsics.yaml
+##标定方式2：使用calibration_kit
+cd calibration_kit
+./build/calibration_kit
 #将标定数据填入modules/calibration/data/dev_kit_pix_hooke/camera_params/front_6mm_extrinsics.yaml
 
 ###油门刹车标定(厂家已标定好)
