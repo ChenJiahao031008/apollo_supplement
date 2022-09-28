@@ -21,6 +21,7 @@ bash scripts/bootstrap.sh
 #cyber_monitor上下换行，左右进出，pg翻页，nm逗号项目，ft帧率话题，空格订阅
 
 ###其他命令
+./docker/scripts/dev_into.sh(shell可用./执行)
 watch -n 0.1 nvidia-smi
 192.162.200.3:8888
 bash apollo.sh build_opt
