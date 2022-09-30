@@ -271,7 +271,7 @@ create_ndt_map  "${DIR_NAME}/pcd" "${DIR_NAME}/pcd/corrected_poses.txt"
 #注释掉lossy_map
 #create_lossy_map
 >>>
-bash /apollo/scripts/ndt_simple_map_creator.sh data/bag/localization /apollo/modules/calibration/data/dev_kit_pix_hooke/lidar_params/lidar32_novatel_extrinsics.yaml 51 /apollo/modules/map/data/map_test lidar32
+bash /apollo/scripts/ndt_simple_map_creator.sh data/bag/localization /apollo/modules/calibration/data/dev_kit_pix_hooke/lidar_params/lidar32_novatel_extrinsics.yaml 51 /apollo/modules/map/data/map_test/ndt_map lidar32
 <<<
 mkdir -p /apollo/modules/map/data/map_test/ndt_map/local_map
 mv /apollo/modules/map/data/map_test/ndt_map/map /apollo/modules/map/data/map_test/ndt_map/local_map/map

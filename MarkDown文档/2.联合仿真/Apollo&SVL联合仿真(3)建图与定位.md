@@ -19,8 +19,6 @@
    拷贝`scripts/msf_simple_map_creator.sh`文件，重命名为`ndt_simple_map_creator.sh`，并对文件做出以下修改：
 
    ```bash
-   ## lin25 ： 修改OUT_MAP_FOLDER
-   OUT_MAP_FOLDER="$4/ndt_map"
    
    ## 创建create_ndt_map()函数
    function create_ndt_map() {
@@ -47,7 +45,7 @@
    执行建图程序，"Usage: ndt_simple_map_creator.sh [records folder] [extrinsic_file] [zone_id] [map folder] [lidar_type]"
 
    ```bash
-   bash ./scripts/ndt_simple_map_creator.sh /apollo/data/bag/svl /apollo/modules/calibration/data/Lincoln2017MKZ/velodyne_params/velodyne128_novatel_extrinsics_example.yaml 10 /apollo/modules/map/data/svl_map lidar128
+   bash ./scripts/ndt_simple_map_creator.sh /apollo/data/bag/svl /apollo/modules/calibration/data/Lincoln2017MKZ/velodyne_params/velodyne128_novatel_extrinsics_example.yaml 10 /apollo/modules/map/data/svl_map/ndt_map lidar128
    ```
 
    在程序执行过程中，会依次遍历采集数据文件夹内的cyber包，先后对数据包进行**数据解析**、**位姿插值**、**地图生成**这三个步骤
