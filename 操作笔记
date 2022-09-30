@@ -400,12 +400,13 @@ bash scripts/generate_routing_topo_graph.sh --map_dir /apollo/modules/map/data/B
 #对/modules/dreamview/conf/hmi_modes/mkz_standard_debug.pb.txt文件内容进行更改
 #将modules/transform/conf/static_transform_conf.pb.txt复制到/apollo/modules/calibration/data/Lincoln2017MKZ下新建transform_conf文件夹
 #新建localization_conf文件夹，将modules/localization/conf/localization.conf拷贝到当前文件夹下
-#对modules/perception/production/conf/perception/文件下中有关激光雷达的参数进行配置
+#对/modules/calibration/data/Lincoln2017MKZ/perception_conf文件下中有关激光雷达的参数进行配置
 ##运行仿真
 cyber_monitor
 bash scripts/bootstrap_lgsvl.sh
 bash scripts/bridge.sh
 watch -n 0.1 nvidia-smi
+mainboard -d modules/calibration/data/Lincoln2017MKZ/perception_dag/dag_streaming_perception_lidar.dag 
 
 ###git操作
 git checkout huzhou
