@@ -197,6 +197,23 @@ bool ManualCalibration(int key_input) {
   return real_hit;
 }
 
+namespace apollo{
+  struct PointXYZIT
+  {
+    float x;
+    float y;
+    float z;
+    unsigned char intensity;
+    double timestamp;
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW // make sure our new allocators are aligned
+  } EIGEN_ALIGN16;                  // enforce SSE padding for correct memory alignment
+}
+POINT_CLOUD_REGISTER_POINT_STRUCT(
+    apollo::PointXYZIT,
+    (float, x, x)(float, y, y)(float, z, z)(std::uint8_t, intensity,
+                                            intensity)(double, timestamp,
+                                                       timestamp))
+
 int main(int argc, char **argv) {
   if (argc != 5) {
     cout << "Usage: ./run_lidar2camera <image_path> <pcd_path> "
@@ -215,13 +232,23 @@ int main(int argc, char **argv) {
   string extrinsic_json = argv[4];
   cv::Mat img = cv::imread(camera_path);
   std::cout << intrinsic_json << std::endl;
-  pcl::PointCloud<pcl::PointXYZI>::Ptr cloud(
-      new pcl::PointCloud<pcl::PointXYZI>);
-  if (pcl::io::loadPCDFile<pcl::PointXYZI>(lidar_path, *cloud) == -1) {
+  pcl::PointCloud<apollo::PointXYZIT>::Ptr cloud(
+      new pcl::PointCloud<apollo::PointXYZIT>);
+  if (pcl::io::loadPCDFile<apollo::PointXYZIT>(lidar_path, *cloud) == -1) {
     PCL_ERROR("Couldn't read file test_pcd.pcd \n");
     return (-1);
   }
-  pcl::PointCloud<pcl::PointXYZI> pcd = *cloud;
+  pcl::PointCloud<pcl::PointXYZI> pcd;
+  for (const auto &p : cloud->points)
+  {
+    pcl::PointXYZI pt;
+    pt.x = p.x;
+    pt.y = p.y;
+    pt.z = p.z;
+    pt.intensity = static_cast<float>(p.intensity);
+    pcd.push_back(pt);
+  }
+
   // load intrinsic
   Eigen::Matrix3d K;
   std::vector<double> dist;
@@ -456,7 +483,7 @@ int main(int argc, char **argv) {
   Eigen::Matrix4d transform = calibration_matrix_;
 
   Eigen::Matrix3d rotation_ = calibration_matrix_.block<3,3>(0,0).transpose();
-  
+
   Eigen::Vector3d translation_ = - rotation_ *  transform.block<3,1>(0,3);
 
   std::cout << "cam_extrinsic_final translation\n"

@@ -1,1 +1,0 @@
-/usr/bin/c++ -fPIC   -O3 -DNDEBUG   -shared -Wl,-soname,liblidar_camera_calib.so -o liblidar_camera_calib.so CMakeFiles/lidar_camera_calib.dir/lidar_camera_calib.cc.o  -L/usr/local/lib 

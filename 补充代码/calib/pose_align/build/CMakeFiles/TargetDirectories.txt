@@ -1,3 +1,0 @@
-/home/mu/workspace/pose_align_practice/build/CMakeFiles/pose_align.dir
-/home/mu/workspace/pose_align_practice/build/CMakeFiles/edit_cache.dir
-/home/mu/workspace/pose_align_practice/build/CMakeFiles/rebuild_cache.dir
