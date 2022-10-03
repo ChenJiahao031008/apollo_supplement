@@ -217,7 +217,52 @@ bash scripts/lidar_parse.sh /apollo/data/bag/calibration /apollo/data/bag/lidar_
 
 ### 2.3 Lidar-Ins标定
 
+进入`Desktop/lidar2ins`文件夹中，编译标定算法的工程：
+
+```shell
+# 如果是第一次运行，请先安装编译所依赖的三方库，并对工程进行编译
+sudo apt-get install libglm-dev libglfw3-dev
+sudo apt-get install ros-melodic-geodesy ros-melodic-pcl-ros ros-melodic-nmea-msgs ros-melodic-libg2o
+
+catkin_make -j4
+```
+
+外参标定的第一步，使用采集得到的点云数据运行一个基于点云的SLAM得到点云坐标系下的轨迹，我们使用floam作为我们实践课的SLAM系统。
+
+```shell
+cd ~/Desktop/lidar2ins
+source devel/setup.bash
+roslaunch floam floam_velodyne.launch pcd_path:=/home/t/apollo/data/bag/calib_lidar2ins/parsed_data/00000/pcd
+```
+
+运行结束后，激光雷达的轨迹会保存在pcd文件所在的文件夹中。
+
+通过rviz，我们可以观察激光SLAM的轨迹和点云地图的质量。
+
+![image-20221003211706948](Apollo&SVL%E8%81%94%E5%90%88%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89%E6%A0%87%E5%AE%9A.assets/image-20221003211706948.png)
+
+通过观察点云的质量，判断是否采用本次采集得到的轨迹用于下一个步骤中进行轨迹对齐。
+
+外参标定第二步，轨迹对齐。
+
+轨迹对齐的过程是基于手眼标定的算法进行开发的。
+
+```shell
+cd ~/Desktop/pose_align/build
+./pose_align /home/t/apollo/data/bag/calib_lidar2ins/parsed_data/00000/pcd
+```
+
+![image-20221003214849745](Apollo&SVL%E8%81%94%E5%90%88%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89%E6%A0%87%E5%AE%9A.assets/image-20221003214849745.png)
+
+对齐的结果将在命令行中显示出来
+
+![image-20221003215004997](Apollo&SVL%E8%81%94%E5%90%88%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89%E6%A0%87%E5%AE%9A.assets/image-20221003215004997.png)
+
+得到初始的对齐结果之后，我们将使用手动工具对标定结果进行微调。
+
 ```bash
+roscore
+# 新建一个终端
 cd /home/t/Desktop/lidar2Ins
 catkin_make && source devel/setup.bash
 rosrun interactive_slam odometry2graph
@@ -227,7 +272,7 @@ rosrun interactive_slam odometry2graph
 
 选择导入，Apollo数据类型，选择上一步中生成的pcd文件所在的文件夹（`data/bag/calib_lidar2ins/parsed_data/00000/pcd`）
 
-![](Apollo&SVL%E8%81%94%E5%90%88%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89%E6%A0%87%E5%AE%9A.assets/image-20220409154810871.png)
+![image-20221003214128296](Apollo&SVL%E8%81%94%E5%90%88%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89%E6%A0%87%E5%AE%9A.assets/image-20221003214128296.png)
 
 标定完成后，结果会在终端进行显示。
 
@@ -312,7 +357,7 @@ rosrun interactive_slam odometry2graph
 
     ```
    bash modules/tools/vehicle_calibration/result2pb.sh result.csv 
-    ```
+   ```
 
    在执行终端的目录下会生成`control_conf.pb.txt` 的控制器相关的配置文件，包括横纵向控制器参数及油门刹车标定表，将该文件拷贝至车辆文件中`/apollo/modules/calibration/data/Lincoln2017MKZ`，在`DreamViewer`中每次重新选择车辆时，会自动将该文件加载至`/apollo/modules/control/conf`文件夹下。
 
