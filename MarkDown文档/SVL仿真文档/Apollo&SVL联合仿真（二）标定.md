@@ -54,17 +54,22 @@ lidar的数据解析需要借助MSF下的数据解析程序，由于仿真数据
 - 打开`/apollo/modules/localization/msf/local_tool/data_extraction/pcd_exporter.cc`,在程序的第61行`void PCDExporter::WritePcdFile(const std::string &filename, const drivers::PointCloud &msg) `函数内，将`    cloud.width，cloud.height `做如下改写。
 
   ```c++
-    bool bsimulator = true;
-    if(bsimulator == true)
-    {
+  pcl::PointCloud<velodyne::PointXYZIT> cloud;
+  //cloud.width = msg.width();
+  //cloud.height = msg.height();
+  // -- 以下为新增内容 --
+  bool bsimulator = true;
+  if(bsimulator == true)
+  {
       std::cout << "msg.size: "<< msg.point_size() << "msg.width() "<< msg.width()<< " msg.height() "<<msg.height()<< std::endl;
       cloud.width = msg.point_size();
       cloud.height = 1;
-    }
-    else{
+  }
+  else{
       cloud.width = msg.width();
       cloud.height = msg.height();
-    }
+  }
+  // -- 新增内容完毕 --
   ```
 
   重新编译apollo程序
@@ -153,7 +158,6 @@ lidar的数据解析需要借助MSF下的数据解析程序，由于仿真数据
   ```bash
   bash scripts/lidar_parse.sh /apollo/data/bag/calibration /apollo/data/bag/calibration /apollo/modules/calibration/data/Lincoln2017MKZ/velodyne_params/velodyne128_novatel_extrinsics_example.yaml  lidar128
   ```
-  
 
  在`calibration`文件夹下会生成`parsed_data`，里面存放了Lidar 点云的pcd文件，用于进行标定。
 
@@ -312,7 +316,7 @@ rosrun interactive_slam odometry2graph
 
     ```
    bash modules/tools/vehicle_calibration/result2pb.sh result.csv 
-    ```
+   ```
 
    在执行终端的目录下会生成`control_conf.pb.txt` 的控制器相关的配置文件，包括横纵向控制器参数及油门刹车标定表，将该文件拷贝至车辆文件中`/apollo/modules/calibration/data/Lincoln2017MKZ`，在`DreamViewer`中每次重新选择车辆时，会自动将该文件加载至`/apollo/modules/control/conf`文件夹下。
 

@@ -63,7 +63,7 @@ namespace pose_align {
                     odom_target_delta.push_back(odom_target.getOdomTransformOfidx(i).inverse() * odom_target.getOdomTransformOfidx(j));
                     last_id = j;
                 }
-                
+
             }
         }
 
@@ -105,7 +105,7 @@ namespace pose_align {
 
         std::cout<<"the extrinsic is "<<std::endl;
         std::cout<<"pose_result quaternion is "<<pose_result.rotation_.coeffs().transpose()<<std::endl;
-        std::cout<<"pose_result eular is "<<pose_result.rotation_.matrix().eulerAngles(2, 0, 1).transpose() * 180 / 3.1415926<<std::endl;
+        std::cout<<"pose_result eular is "<<pose_result.rotation_.matrix().eulerAngles(2, 0, 1).transpose() << std::endl;
         std::cout<<"pose_result translation is "<<pose_result.translation_.transpose()<<std::endl;
 
         pcl::PointCloud<pcl::PointXYZ>::Ptr target_pts(new pcl::PointCloud<pcl::PointXYZ>);
@@ -126,7 +126,7 @@ namespace pose_align {
 
         pcl::visualization::PCLVisualizer::Ptr viewer(new pcl::visualization::PCLVisualizer("trans_viewer"));
         viewer->setBackgroundColor(255, 255, 255);
-        
+
         // viewer->
 
         pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> target_color_handle(target_pts, 255, 0, 0);
