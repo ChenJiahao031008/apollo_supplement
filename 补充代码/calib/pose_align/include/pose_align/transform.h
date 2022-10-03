@@ -8,10 +8,10 @@ namespace pose_align {
     public:
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-        typedef Eigen::Matrix<float, 6, 1> Vector6;
-        typedef Eigen::Quaternionf Rotation;
-        typedef Eigen::Vector3f Translation;
-        typedef Eigen::Matrix<float, 4, 4> Matrix;
+        typedef Eigen::Matrix<double, 6, 1> Vector6;
+        typedef Eigen::Quaterniond Rotation;
+        typedef Eigen::Vector3d Translation;
+        typedef Eigen::Matrix<double, 4, 4> Matrix;
 
         Transform() {
             rotation_.setIdentity();
@@ -50,13 +50,13 @@ namespace pose_align {
             if (norm < kEpsilon) {
                 return Transform(vector.head<3>(), Rotation::Identity());
             } else {
-                return Transform(vector.head<3>(), Rotation(Eigen::AngleAxisf(
+                return Transform(vector.head<3>(), Rotation(Eigen::AngleAxisd(
                         norm, vector.tail<3>() / norm)));
             }
         }
 
         Vector6 log() const {
-            Eigen::AngleAxisf angle_axis(rotation_);
+            Eigen::AngleAxisd angle_axis(rotation_);
             return (Vector6() << translation_, angle_axis.angle() * angle_axis.axis())
                     .finished();
         }

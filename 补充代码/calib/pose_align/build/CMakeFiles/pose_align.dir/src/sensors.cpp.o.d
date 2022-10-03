@@ -1,7 +1,7 @@
 CMakeFiles/pose_align.dir/src/sensors.cpp.o: \
- /home/mu/workspace/pose_align_practice/src/sensors.cpp \
+ /home/mu/workspace/apollo_supplement/补充代码/calib/pose_align/src/sensors.cpp \
  /usr/include/stdc-predef.h \
- /home/mu/workspace/pose_align_practice/include/pose_align/sensors.h \
+ /home/mu/workspace/apollo_supplement/补充代码/calib/pose_align/include/pose_align/sensors.h \
  /usr/include/c++/7/random /usr/include/c++/7/cmath \
  /usr/include/x86_64-linux-gnu/c++/7/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/7/bits/os_defines.h \
@@ -134,7 +134,7 @@ CMakeFiles/pose_align.dir/src/sensors.cpp.o: \
  /usr/include/x86_64-linux-gnu/c++/7/bits/opt_random.h \
  /usr/include/c++/7/bits/random.tcc /usr/include/c++/7/numeric \
  /usr/include/c++/7/bits/stl_numeric.h \
- /home/mu/workspace/pose_align_practice/include/pose_align/transform.h \
+ /home/mu/workspace/apollo_supplement/补充代码/calib/pose_align/include/pose_align/transform.h \
  /usr/include/eigen3/Eigen/Geometry /usr/include/eigen3/Eigen/Core \
  /usr/include/eigen3/Eigen/src/Core/util/DisableStupidWarnings.h \
  /usr/include/eigen3/Eigen/src/Core/util/Macros.h \

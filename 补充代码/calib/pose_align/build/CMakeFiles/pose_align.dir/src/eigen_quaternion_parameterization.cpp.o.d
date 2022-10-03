@@ -1,5 +1,5 @@
 CMakeFiles/pose_align.dir/src/eigen_quaternion_parameterization.cpp.o: \
- /home/mu/workspace/pose_align_practice/src/eigen_quaternion_parameterization.cpp \
+ /home/mu/workspace/apollo_supplement/补充代码/calib/pose_align/src/eigen_quaternion_parameterization.cpp \
  /usr/include/stdc-predef.h /usr/include/c++/7/cmath \
  /usr/include/x86_64-linux-gnu/c++/7/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/7/bits/os_defines.h \
@@ -52,7 +52,7 @@ CMakeFiles/pose_align.dir/src/eigen_quaternion_parameterization.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h \
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h \
  /usr/include/alloca.h /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
- /home/mu/workspace/pose_align_practice/include/pose_align/eigen_quaternion_parameterization.h \
+ /home/mu/workspace/apollo_supplement/补充代码/calib/pose_align/include/pose_align/eigen_quaternion_parameterization.h \
  /usr/local/include/ceres/local_parameterization.h \
  /usr/include/c++/7/array /usr/include/c++/7/utility \
  /usr/include/c++/7/bits/stl_relops.h /usr/include/c++/7/bits/stl_pair.h \

@@ -44,6 +44,21 @@ namespace pose_align {
         Transform out =
                 data_[idx].getTransform() * Transform::exp(t_diff_ratio * diff_vector);
 
+        // Transform data_idx = data_[idx].getTransform();
+
+        // Eigen::Quaterniond pre_q = data_[idx].getTransform().rotation_;
+        // Eigen::Quaterniond cur_q = data_[idx + 1].getTransform().rotation_;
+
+        // Eigen::Quaterniond delta_q = pre_q.slerp(t_diff_ratio, cur_q);
+        // Eigen::Vector3d delta_t = t_diff_ratio * (data_[idx].getTransform().translation_ - 
+        //                                           data_[idx + 1].getTransform().translation_);
+
+        // Transform delta_T = Transform(delta_t, delta_q);
+
+        // Transform out = data_[idx].getTransform();
+        // // out.translation_ = (out.translation_ + delta_t).eval();
+        // // out.rotation_ = out.rotation_ * delta_q;
+
         return out;
     }
 

@@ -1,3 +1,3 @@
-/home/mu/workspace/pose_align_practice/build/CMakeFiles/pose_align.dir
-/home/mu/workspace/pose_align_practice/build/CMakeFiles/edit_cache.dir
-/home/mu/workspace/pose_align_practice/build/CMakeFiles/rebuild_cache.dir
+/home/mu/workspace/apollo_supplement/补充代码/calib/pose_align/build/CMakeFiles/pose_align.dir
+/home/mu/workspace/apollo_supplement/补充代码/calib/pose_align/build/CMakeFiles/edit_cache.dir
+/home/mu/workspace/apollo_supplement/补充代码/calib/pose_align/build/CMakeFiles/rebuild_cache.dir

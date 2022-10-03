@@ -1,7 +1,7 @@
 CMakeFiles/pose_align.dir/src/aligner.cpp.o: \
- /home/mu/workspace/pose_align_practice/src/aligner.cpp \
+ /home/mu/workspace/apollo_supplement/补充代码/calib/pose_align/src/aligner.cpp \
  /usr/include/stdc-predef.h \
- /home/mu/workspace/pose_align_practice/include/pose_align/aligner.h \
+ /home/mu/workspace/apollo_supplement/补充代码/calib/pose_align/include/pose_align/aligner.h \
  /usr/local/include/ceres/ceres.h \
  /usr/local/include/ceres/autodiff_cost_function.h \
  /usr/include/c++/7/memory /usr/include/c++/7/bits/stl_algobase.h \
@@ -424,14 +424,14 @@ CMakeFiles/pose_align.dir/src/aligner.cpp.o: \
  /usr/include/c++/7/bits/std_mutex.h /usr/include/c++/7/thread \
  /usr/include/c++/7/condition_variable /usr/include/c++/7/atomic \
  /usr/include/c++/7/bits/atomic_futex.h \
- /home/mu/workspace/pose_align_practice/include/pose_align/sensors.h \
+ /home/mu/workspace/apollo_supplement/补充代码/calib/pose_align/include/pose_align/sensors.h \
  /usr/include/c++/7/random /usr/include/c++/7/bits/random.h \
  /usr/include/x86_64-linux-gnu/c++/7/bits/opt_random.h \
  /usr/include/c++/7/bits/random.tcc \
- /home/mu/workspace/pose_align_practice/include/pose_align/transform.h \
+ /home/mu/workspace/apollo_supplement/补充代码/calib/pose_align/include/pose_align/transform.h \
  /usr/include/eigen3/Eigen/Geometry \
- /home/mu/workspace/pose_align_practice/include/pose_align/eigen_quaternion_parameterization.h \
- /home/mu/workspace/pose_align_practice/include/pose_align/pose_error.h \
+ /home/mu/workspace/apollo_supplement/补充代码/calib/pose_align/include/pose_align/eigen_quaternion_parameterization.h \
+ /home/mu/workspace/apollo_supplement/补充代码/calib/pose_align/include/pose_align/pose_error.h \
  /usr/local/include/ceres/rotation.h /usr/include/eigen3/Eigen/Eigen \
  /usr/include/eigen3/Eigen/Dense /usr/include/eigen3/Eigen/Sparse \
  /usr/include/eigen3/Eigen/SparseCore \

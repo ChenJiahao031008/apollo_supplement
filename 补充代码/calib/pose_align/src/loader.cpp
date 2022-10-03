@@ -10,6 +10,13 @@
 #include "pose_align/transform.h"
 
 
+#include <pcl/visualization/pcl_visualizer.h>
+#include <pcl/visualization/point_cloud_color_handlers.h>
+
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
+
+
 namespace pose_align {
 
     Loader::Loader() {}
@@ -37,9 +44,9 @@ namespace pose_align {
                                             std::atof(split_str[5].c_str()),
                                             std::atof(split_str[6].c_str()),
                                             std::atof(split_str[7].c_str()));
-                Transform::Translation trans(std::atof(split_str[2].c_str()),
-                                                std::atof(split_str[3].c_str()),
-                                                std::atof(split_str[4].c_str()));
+                Transform::Translation trans(static_cast<double>(std::stold(split_str[2].c_str())),
+                                             static_cast<double>(std::stold(split_str[3].c_str())),
+                                             static_cast<double>(std::stold(split_str[4].c_str())));
 
                 Transform pose = Transform(trans, quat);
 
