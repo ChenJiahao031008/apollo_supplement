@@ -46,6 +46,41 @@ cyber_monitor
 
 ![](Apollo&SVL%E8%81%94%E5%90%88%E4%BB%BF%E7%9C%9F%EF%BC%88%E5%9B%9B%EF%BC%89%E6%84%9F%E7%9F%A5%E8%9E%8D%E5%90%88.assets/2022-04-07%2013-52-47%20%E7%9A%84%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE.png)
 
+**扩展：感知可视化**
+
+- 参数配置
+
+  打开``modules/perception/production/conf/perception/camera/fusion_camera_detection_component.pb.txt``配置文件，更改如下参数选项
+
+  ```c++
+  frame_capacity : 15
+  timestamp_offset : 0.2
+  enable_visualization : true
+  output_final_obstacles : true
+  output_obstacles_channel_name : "/apollo/perception/obstacles"
+  ```
+
+- 程序更改
+
+  打开`/home/t/apollo/modules/perception/camera/tools/offline/visualizer.cc`, 跳转到`void Visualizer::ShowResult_all_info_single_camera(...)函数体（约1365行）`，做如下更改
+
+  ![image-20221002211352225](Apollo&SVL%E8%81%94%E5%90%88%E4%BB%BF%E7%9C%9F%EF%BC%88%E5%9B%9B%EF%BC%89%E6%84%9F%E7%9F%A5%E8%9E%8D%E5%90%88.assets/image-20221002211352225.png)
+
+  通过opecv将感知结果在图像上进行显示，感知结果包括障碍物以及车道线。
+
+- 程序编译后运行camera的感知单元
+
+  ```bash
+  bash apollo.sh build_opt
+  cyber_launch start modules/perception/production/launch/dev_kit_perception_camera.launch
+  ```
+
+- 运行效果如下
+
+![image-20221002205013721](Apollo&SVL%E8%81%94%E5%90%88%E4%BB%BF%E7%9C%9F%EF%BC%88%E5%9B%9B%EF%BC%89%E6%84%9F%E7%9F%A5%E8%9E%8D%E5%90%88.assets/image-20221002205013721.png)
+
+
+
 ## 3 激光感知
 
 ### 3.1 CNNSegmentation 感知
@@ -349,20 +384,5 @@ PointPillar是基于激光点云进行目标检测的经典开源算法，在apo
    建图效果对比如下：
 
    ![image-20220409015901932](Apollo&SVL%E8%81%94%E5%90%88%E4%BB%BF%E7%9C%9F%EF%BC%88%E5%9B%9B%EF%BC%89%E6%84%9F%E7%9F%A5%E8%9E%8D%E5%90%88.assets/image-20220409015901932.png)
-
-   
-
-
-
-
-
-  
-
-
-
-
-
-
-
 
 
