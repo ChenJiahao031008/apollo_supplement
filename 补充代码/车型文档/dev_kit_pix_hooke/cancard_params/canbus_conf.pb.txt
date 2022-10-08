@@ -1,7 +1,7 @@
 vehicle_parameter {
   brand: DKIT
   max_enable_fail_attempt: 5
-  driving_mode: AUTO_SPEED_ONLY
+  driving_mode: COMPLETE_AUTO_DRIVE
 }
 
 can_card_parameter {

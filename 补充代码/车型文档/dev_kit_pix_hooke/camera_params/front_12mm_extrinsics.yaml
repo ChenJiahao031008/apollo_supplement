@@ -1,5 +1,5 @@
 header:
-  frame_id: lidar16
+  frame_id: lidar32
   stamp:
     secs: 0
     nsecs: 0

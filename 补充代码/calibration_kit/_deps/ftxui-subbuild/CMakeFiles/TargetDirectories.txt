@@ -1,3 +1,0 @@
-/home/neousys/calibration_kit/_deps/ftxui-subbuild/CMakeFiles/rebuild_cache.dir
-/home/neousys/calibration_kit/_deps/ftxui-subbuild/CMakeFiles/edit_cache.dir
-/home/neousys/calibration_kit/_deps/ftxui-subbuild/CMakeFiles/ftxui-populate.dir

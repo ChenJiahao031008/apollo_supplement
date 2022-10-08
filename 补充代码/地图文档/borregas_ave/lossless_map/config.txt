@@ -1,0 +1,13 @@
+
+
+Veldoyne 64E
+Map coordinate type: UTM
+Map compression: 1
+Map resolution: 0.125000, 
+Map size: 0.000000 0.000000 9000448.000000 90000384.000000
+Map node size: 1024 x 1024
+Map row x col: 
+703128 x 70316, Map image max intensity: 0.000000
+Map image max var: 0.000000
+PCD folders: 
+/apollo/modules/map/data/borregas_ave/parsed_data/00000/pcd

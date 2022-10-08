@@ -1,6 +1,9 @@
 # Define all coms in DAG streaming.
+# In D-KIT, we only support rtk localization, we use this configuration to overwrite the original RTK configuration.
+
 module_config {
     module_library : "/apollo/bazel-bin/modules/localization/rtk/librtk_localization_component.so"
+
     components {
       class_name : "RTKLocalizationComponent"
       config {

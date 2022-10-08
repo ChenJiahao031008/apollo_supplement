@@ -1,4 +1,4 @@
-child_frame_id: lidar16
+child_frame_id: velodyne64
 transform:
   rotation:
     x: 0.0178712428342356
