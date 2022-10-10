@@ -1,0 +1,8 @@
+prefix=/home/neousys/Desktop/image_collect/devel
+
+Name: cam_collect
+Description: Description of cam_collect
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

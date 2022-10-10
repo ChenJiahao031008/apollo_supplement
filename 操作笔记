@@ -426,11 +426,3 @@ git clone git@github.com:ChenJiahao031008/apollo_supplement.git
 
 ###安装显卡驱动
 #开机bios界面，点击esc，进入recovery模式，进入root，选择 5.4.0-125-generic(recovery mode)，进入home/neousys路径，执行NVIDIA-...,是是是否否，nvidia-smi
-
-
-
-
-
-
-
-

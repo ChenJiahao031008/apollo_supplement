@@ -1,0 +1,4 @@
+<launch>
+    <arg name="address" default="/home/t/Desktop/image_collect/src/cam_collect/data"/>
+    <node name="cam_collect" pkg="cam_collect" type="cam_collect_node" args="$(arg address)" output="screen" />
+</launch>
